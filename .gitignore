@@ -1,0 +1,4 @@
+node_modules/
+bostique.db*
+*.log
+.vercel/
