@@ -50,20 +50,25 @@ function parseBody(req) {
 module.exports = async (req, res) => {
   const db = loadDB();
   const { method, url, headers } = req;
-  const path = headers['x-forwarded-path'] || url;
+  
+  // Strip query string from URL
+  const path = (headers['x-forwarded-path'] || url).split('?')[0];
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 'no-store, must-revalidate');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
   if (method === 'OPTIONS') return res.status(200).end();
 
-  console.log('Request:', method, path);
+  console.log('REQ:', method, path, 'url:', url);
 
-  if (path === '/api/categories') {
+  // /api/categories - GET
+  if (path === '/api/categories' && method === 'GET') {
     return res.json(db.categories.map(c => ({...c, productCount: db.products.filter(p => p.category_id === c.id && p.status === 'active').length})));
   }
 
+  // /api/products - GET
   if (path === '/api/products' && method === 'GET') {
     return res.json(db.products.map(p => {
       const cat = db.categories.find(c => c.id === p.category_id);
@@ -71,16 +76,19 @@ module.exports = async (req, res) => {
     }));
   }
 
+  // /api/products - POST (create)
   if (path === '/api/products' && method === 'POST') {
     const body = await parseBody(req);
     const p = JSON.parse(body);
     const newProd = { id: db.nextProdId++, ...p, image: p.image || '' };
     db.products.push(newProd);
     saveDB(db);
+    console.log('Created product:', newProd.id, newProd.name);
     return res.json({ success: true, id: newProd.id });
   }
 
-  if (path.startsWith('/api/products/') && method === 'PUT') {
+  // /api/products/:id - PUT
+  if (path.match(/^\/api\/products\/\d+$/) && method === 'PUT') {
     const id = parseInt(path.split('/').pop());
     const body = await parseBody(req);
     const data = JSON.parse(body);
@@ -88,18 +96,22 @@ module.exports = async (req, res) => {
     if (idx >= 0) {
       db.products[idx] = { ...db.products[idx], ...data };
       saveDB(db);
+      console.log('Updated product:', id);
     }
     return res.json({ success: true });
   }
 
-  if (path.startsWith('/api/products/') && method === 'DELETE') {
+  // /api/products/:id - DELETE
+  if (path.match(/^\/api\/products\/\d+$/) && method === 'DELETE') {
     const id = parseInt(path.split('/').pop());
     db.products = db.products.filter(p => p.id !== id);
     saveDB(db);
+    console.log('Deleted product:', id);
     return res.json({ success: true });
   }
 
-  if (path === '/api/stats') {
+  // /api/stats - GET
+  if (path === '/api/stats' && method === 'GET') {
     return res.json({
       products: db.products.filter(p => p.status === 'active').length,
       categories: db.categories.length,
@@ -109,10 +121,12 @@ module.exports = async (req, res) => {
     });
   }
 
-  if (path === '/api/users') {
+  // /api/users - GET
+  if (path === '/api/users' && method === 'GET') {
     return res.json(db.users.map(u => ({...u, created_at: new Date().toISOString()})));
   }
 
+  // /api/register - POST
   if (path === '/api/register' && method === 'POST') {
     const body = await parseBody(req);
     const { name, email, phone, password } = JSON.parse(body);
@@ -125,6 +139,7 @@ module.exports = async (req, res) => {
     return res.json({ success: true, userId: user.id });
   }
 
+  // /api/login - POST
   if (path === '/api/login' && method === 'POST') {
     const body = await parseBody(req);
     const { email, password } = JSON.parse(body);
@@ -133,5 +148,6 @@ module.exports = async (req, res) => {
     return res.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
   }
 
-  res.status(404).json({ error: 'Not found' });
+  console.log('NOT FOUND:', path);
+  res.status(404).json({ error: 'Not found', path });
 };
