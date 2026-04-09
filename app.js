@@ -369,10 +369,13 @@ async function saveProd(){
     ? await fetchAPI('/api/products', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name,category_id,price,emoji,description:desc,badge,status,image}) })
     : await fetchAPI(`/api/products/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name,category_id,price,emoji,description:desc,badge,status,image}) });
   
-  if(apiRes?.success || apiRes) {
+  console.log('Save product API response:', apiRes);
+  
+  if(apiRes && apiRes.success === true) {
     showToast('✓ Product saved');
     resetProdForm(); renderAdmProds(); renderProds(); updateDash();
   } else {
+    console.error('API save failed:', apiRes);
     showToast('API not available - saved locally');
   }
 }
