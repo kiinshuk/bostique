@@ -53,6 +53,9 @@ module.exports = async (req, res) => {
   
   // Strip query string from URL
   const path = (headers['x-forwarded-path'] || url).split('?')[0];
+  
+  // Add unique response header to identify this function
+  res.setHeader('X-Bostique-API', 'v2');
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
