@@ -10,8 +10,13 @@ const db = new Database('bostique.db');
 
 db.pragma('journal_mode = WAL');
 
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+app.use(cors({ 
+  origin: function(origin, callback) {
+    callback(null, true);
+  },
+  credentials: true 
+}));
+app.use(express.json({ limit: '10mb' }));
 app.use(session({
   secret: 'bostique-admin-2026-key',
   resave: false,
@@ -24,6 +29,16 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    phone TEXT,
+    password TEXT NOT NULL,
+    verified INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -42,6 +57,7 @@ db.exec(`
     emoji TEXT DEFAULT '🛍️',
     description TEXT DEFAULT '',
     badge TEXT DEFAULT '',
+    image TEXT DEFAULT '',
     status TEXT DEFAULT 'active',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id)
@@ -100,7 +116,7 @@ try {
 
   const prodCount = db.prepare('SELECT COUNT(*) as c FROM products').get().c;
   if (prodCount === 0) {
-    const insertProd = db.prepare(`INSERT INTO products (name, category_id, price, emoji, description, badge, status) VALUES (?, ?, ?, ?, ?, ?, ?)`);
+    const insertProd = db.prepare(`INSERT INTO products (name, category_id, price, emoji, description, badge, status, image) VALUES (?, ?, ?, ?, ?, ?, ?, '')`);
     
     const duffel = db.prepare('SELECT id FROM categories WHERE name = ?').get('Duffel Bag');
     const carry = db.prepare('SELECT id FROM categories WHERE name = ?').get('Carry Bag');
@@ -141,6 +157,56 @@ app.get('/api/admin/check', (req, res) => {
   res.json({ authenticated: !!req.session.adminId });
 });
 
+// User Registration
+app.post('/api/register', (req, res) => {
+  const { name, email, phone, password } = req.body;
+  if (!name || !email || !password) {
+    return res.json({ success: false, error: 'Name, email and password required' });
+  }
+  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+  if (existing) {
+    return res.json({ success: false, error: 'Email already registered' });
+  }
+  const hash = bcrypt.hashSync(password, 10);
+  try {
+    const info = db.prepare('INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)').run(name, email, phone || '', hash);
+    res.json({ success: true, userId: info.lastInsertRowid });
+  } catch(e) {
+    res.json({ success: false, error: 'Registration failed' });
+  }
+});
+
+// User Login
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.json({ success: false, error: 'Email and password required' });
+  }
+  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.json({ success: false, error: 'Invalid email or password' });
+  }
+  req.session.userId = user.id;
+  req.session.userName = user.name;
+  req.session.userEmail = user.email;
+  res.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
+});
+
+// User Logout
+app.post('/api/logout', (req, res) => {
+  req.session.destroy();
+  res.json({ success: true });
+});
+
+// Check User Session
+app.get('/api/user', (req, res) => {
+  if (req.session.userId) {
+    res.json({ loggedIn: true, user: { id: req.session.userId, name: req.session.userName, email: req.session.userEmail } });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
 app.get('/api/categories', (req, res) => {
   const cats = db.prepare('SELECT * FROM categories ORDER BY id').all();
   const prods = db.prepare("SELECT category_id, COUNT(*) as count FROM products WHERE status = 'active' GROUP BY category_id").all();
@@ -151,7 +217,7 @@ app.get('/api/categories', (req, res) => {
 
 app.get('/api/products', (req, res) => {
   const { category, status } = req.query;
-  let sql = `SELECT p.*, c.name as category_name, c.icon as category_icon FROM products p JOIN categories c ON p.category_id = c.id`;
+  let sql = `SELECT p.id, p.name, p.category_id, c.name as category, c.name as category_name, c.icon as category_icon, p.price, COALESCE(p.emoji, '🛍️') as emoji, COALESCE(p.description, '') as desc, COALESCE(p.badge, '') as badge, COALESCE(p.image, '') as image, COALESCE(p.status, 'active') as status FROM products p JOIN categories c ON p.category_id = c.id`;
   const params = [];
   const conditions = [];
   if (category && category !== 'All') {
@@ -166,26 +232,26 @@ app.get('/api/products', (req, res) => {
   sql += ' ORDER BY p.id';
   const prods = db.prepare(sql).all(...params);
   res.json(prods.map(p => ({
-    id: p.id, name: p.name, category: p.category_name, category_id: p.category_id,
-    price: p.price, emoji: p.emoji, desc: p.description, badge: p.badge, status: p.status
+    id: p.id, name: p.name, category: p.category, category_id: p.category_id,
+    price: p.price, emoji: p.emoji, desc: p.desc, badge: p.badge, image: p.image, status: p.status
   })));
 });
 
 app.post('/api/products', (req, res) => {
   if (!req.session.adminId) return res.status(401).json({ error: 'Unauthorized' });
-  const { name, category_id, price, emoji, description, badge, status } = req.body;
+  const { name, category_id, price, emoji, description, badge, status, image } = req.body;
   const cat = db.prepare('SELECT id FROM categories WHERE id = ?').get(category_id);
   if (!cat) return res.status(400).json({ error: 'Invalid category' });
-  const info = db.prepare(`INSERT INTO products (name, category_id, price, emoji, description, badge, status) VALUES (?, ?, ?, ?, ?, ?, ?)`)
-    .run(name, category_id, price, emoji || '🛍️', description || '', badge || '', status || 'active');
+  const info = db.prepare(`INSERT INTO products (name, category_id, price, emoji, description, badge, status, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+    .run(name, category_id, price, emoji || '🛍️', description || '', badge || '', status || 'active', image || '');
   res.json({ success: true, id: info.lastInsertRowid });
 });
 
 app.put('/api/products/:id', (req, res) => {
   if (!req.session.adminId) return res.status(401).json({ error: 'Unauthorized' });
-  const { name, category_id, price, emoji, description, badge, status } = req.body;
-  db.prepare(`UPDATE products SET name = ?, category_id = ?, price = ?, emoji = ?, description = ?, badge = ?, status = ? WHERE id = ?`)
-    .run(name, category_id, price, emoji || '🛍️', description || '', badge || '', status || 'active', req.params.id);
+  const { name, category_id, price, emoji, description, badge, status, image } = req.body;
+  db.prepare(`UPDATE products SET name = ?, category_id = ?, price = ?, emoji = ?, description = ?, badge = ?, status = ?, image = ? WHERE id = ?`)
+    .run(name, category_id, price, emoji || '🛍️', description || '', badge || '', status || 'active', image || '', req.params.id);
   res.json({ success: true });
 });
 
@@ -284,7 +350,15 @@ app.get('/api/stats', (req, res) => {
   const catCount = db.prepare('SELECT COUNT(*) as c FROM categories').get().c;
   const orderCount = db.prepare('SELECT COUNT(*) as c FROM orders').get().c;
   const diskCount = db.prepare('SELECT COUNT(*) as c FROM discounts WHERE active = 1').get().c;
-  res.json({ products: prodCount, categories: catCount, orders: orderCount, discounts: diskCount });
+  const userCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
+  res.json({ products: prodCount, categories: catCount, orders: orderCount, discounts: diskCount, users: userCount });
+});
+
+// Get all users (admin only)
+app.get('/api/users', (req, res) => {
+  if (!req.session.adminId) return res.status(401).json({ error: 'Unauthorized' });
+  const users = db.prepare('SELECT id, name, email, phone, created_at FROM users ORDER BY id DESC').all();
+  res.json(users);
 });
 
 app.use(express.static(path.join(__dirname, '.')));
