@@ -39,27 +39,66 @@ function saveDB(data) {
   } catch(e) {}
 }
 
-module.exports = (req, res) => {
+function parseBody(req) {
+  return new Promise((resolve) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => resolve(body));
+  });
+}
+
+module.exports = async (req, res) => {
   const db = loadDB();
-  const { method, url } = req;
+  const { method, url, headers } = req;
+  const path = headers['x-forwarded-path'] || url;
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (method === 'OPTIONS') return res.status(200).end();
 
-  if (url === '/api/categories') {
+  console.log('Request:', method, path);
+
+  if (path === '/api/categories') {
     return res.json(db.categories.map(c => ({...c, productCount: db.products.filter(p => p.category_id === c.id && p.status === 'active').length})));
   }
 
-  if (method === 'GET' && url === '/api/products') {
+  if (path === '/api/products' && method === 'GET') {
     return res.json(db.products.map(p => {
       const cat = db.categories.find(c => c.id === p.category_id);
       return {...p, category: cat ? cat.name : 'Unknown'};
     }));
   }
 
-  if (url === '/api/stats') {
+  if (path === '/api/products' && method === 'POST') {
+    const body = await parseBody(req);
+    const p = JSON.parse(body);
+    const newProd = { id: db.nextProdId++, ...p, image: p.image || '' };
+    db.products.push(newProd);
+    saveDB(db);
+    return res.json({ success: true, id: newProd.id });
+  }
+
+  if (path.startsWith('/api/products/') && method === 'PUT') {
+    const id = parseInt(path.split('/').pop());
+    const body = await parseBody(req);
+    const data = JSON.parse(body);
+    const idx = db.products.findIndex(p => p.id === id);
+    if (idx >= 0) {
+      db.products[idx] = { ...db.products[idx], ...data };
+      saveDB(db);
+    }
+    return res.json({ success: true });
+  }
+
+  if (path.startsWith('/api/products/') && method === 'DELETE') {
+    const id = parseInt(path.split('/').pop());
+    db.products = db.products.filter(p => p.id !== id);
+    saveDB(db);
+    return res.json({ success: true });
+  }
+
+  if (path === '/api/stats') {
     return res.json({
       products: db.products.filter(p => p.status === 'active').length,
       categories: db.categories.length,
@@ -69,73 +108,28 @@ module.exports = (req, res) => {
     });
   }
 
-  if (url === '/api/users') {
+  if (path === '/api/users') {
     return res.json(db.users.map(u => ({...u, created_at: new Date().toISOString()})));
   }
 
-  if (method === 'POST' && url === '/api/register') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      const { name, email, phone, password } = JSON.parse(body);
-      if (db.users.find(u => u.email === email)) {
-        return res.status(400).json({ success: false, error: 'Email already registered' });
-      }
-      const user = { id: db.users.length + 1, name, email, phone, password: Buffer.from(password).toString('base64'), created_at: new Date().toISOString() };
-      db.users.push(user);
-      saveDB(db);
-      res.json({ success: true, userId: user.id });
-    });
-    return;
-  }
-
-  if (method === 'POST' && url === '/api/login') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      const { email, password } = JSON.parse(body);
-      const user = db.users.find(u => u.email === email && u.password === Buffer.from(password).toString('base64'));
-      if (!user) return res.status(401).json({ success: false, error: 'Invalid credentials' });
-      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
-    });
-    return;
-  }
-
-  if (method === 'POST' && url === '/api/products') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      const p = JSON.parse(body);
-      const newProd = { id: db.nextProdId++, ...p, image: p.image || '' };
-      db.products.push(newProd);
-      saveDB(db);
-      res.json({ success: true, id: newProd.id });
-    });
-    return;
-  }
-
-  if (method === 'PUT' && url.startsWith('/api/products/')) {
-    const id = parseInt(url.split('/').pop());
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      const data = JSON.parse(body);
-      const idx = db.products.findIndex(p => p.id === id);
-      if (idx >= 0) {
-        db.products[idx] = { ...db.products[idx], ...data };
-        saveDB(db);
-      }
-      res.json({ success: true });
-    });
-    return;
-  }
-
-  if (method === 'DELETE' && url.startsWith('/api/products/')) {
-    const id = parseInt(url.split('/').pop());
-    db.products = db.products.filter(p => p.id !== id);
+  if (path === '/api/register' && method === 'POST') {
+    const body = await parseBody(req);
+    const { name, email, phone, password } = JSON.parse(body);
+    if (db.users.find(u => u.email === email)) {
+      return res.status(400).json({ success: false, error: 'Email already registered' });
+    }
+    const user = { id: db.users.length + 1, name, email, phone, password: Buffer.from(password).toString('base64'), created_at: new Date().toISOString() };
+    db.users.push(user);
     saveDB(db);
-    res.json({ success: true });
-    return;
+    return res.json({ success: true, userId: user.id });
+  }
+
+  if (path === '/api/login' && method === 'POST') {
+    const body = await parseBody(req);
+    const { email, password } = JSON.parse(body);
+    const user = db.users.find(u => u.email === email && u.password === Buffer.from(password).toString('base64'));
+    if (!user) return res.status(401).json({ success: false, error: 'Invalid credentials' });
+    return res.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
   }
 
   res.status(404).json({ error: 'Not found' });
