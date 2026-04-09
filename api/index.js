@@ -52,7 +52,7 @@ module.exports = (req, res) => {
     return res.json(db.categories.map(c => ({...c, productCount: db.products.filter(p => p.category_id === c.id && p.status === 'active').length})));
   }
 
-  if (url === '/api/products') {
+  if (method === 'GET' && url === '/api/products') {
     return res.json(db.products.map(p => {
       const cat = db.categories.find(c => c.id === p.category_id);
       return {...p, category: cat ? cat.name : 'Unknown'};

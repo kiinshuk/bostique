@@ -7,8 +7,7 @@
     { "src": "app.js", "use": "@vercel/static" }
   ],
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/api/.*", "dest": "/api/index.js" },
     { "src": "/.*", "dest": "/index.html" }
   ]
 }
