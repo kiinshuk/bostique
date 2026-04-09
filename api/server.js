@@ -79,6 +79,17 @@ module.exports = async (req, res) => {
     }));
   }
 
+  // Test endpoint for product creation
+  if (path === '/api/add-product' && method === 'POST') {
+    const body = await parseBody(req);
+    const p = JSON.parse(body);
+    const newProd = { id: db.nextProdId++, ...p, image: p.image || '' };
+    db.products.push(newProd);
+    saveDB(db);
+    console.log('Created product via /api/add-product:', newProd.id, newProd.name);
+    return res.json({ success: true, id: newProd.id });
+  }
+
   // /api/products - POST (create)
   if (path === '/api/products' && method === 'POST') {
     const body = await parseBody(req);
