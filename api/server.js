@@ -92,7 +92,9 @@ module.exports = async (req, res) => {
 
   // /api/products - POST (create)
   if (path === '/api/products' && method === 'POST') {
+    console.log('POST to /api/products - parsing body...');
     const body = await parseBody(req);
+    console.log('Body received:', body.substring(0, 100));
     const p = JSON.parse(body);
     const newProd = { id: db.nextProdId++, ...p, image: p.image || '' };
     db.products.push(newProd);
