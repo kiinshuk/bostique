@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Categories from './components/Categories';
@@ -30,6 +31,40 @@ const fallbackCategories = [
   {id:1,name:'Duffel Bag',icon:'🧳'},{id:2,name:'Carry Bag',icon:'👜'},{id:3,name:'Backpack',icon:'🎒'},{id:4,name:'Cushion Cover',icon:'🛋️'}
 ];
 
+const CACHE_KEYS = { products: 'bostique_products', categories: 'bostique_categories', cart: 'bostique_cart', user: 'bostique_user' };
+const CACHE_DURATION = 15 * 60 * 1000;
+
+function getCache(key) {
+  if (typeof window === 'undefined') return null;
+  const cached = localStorage.getItem(key);
+  if (!cached) return null;
+  try {
+    const { data, timestamp } = JSON.parse(cached);
+    if (Date.now() - timestamp > CACHE_DURATION) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return data;
+  } catch { return null; }
+}
+
+function setCache(key, data) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+}
+
+function getCookie(name) {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? JSON.parse(decodeURIComponent(match[2])) : null;
+}
+
+function setCookie(name, value, days = 30) {
+  if (typeof document === 'undefined') return;
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires};path=/;SameSite=Lax`;
+}
+
 export default function Home() {
   const [products, setProducts] = useState(fallbackProducts);
   const [categories, setCategories] = useState(fallbackCategories);
@@ -42,23 +77,52 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [toast, setToast] = useState('');
   const [user, setUser] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const cachedProducts = getCache(CACHE_KEYS.products);
+    const cachedCategories = getCache(CACHE_KEYS.categories);
+    const cachedCart = getCache(CACHE_KEYS.cart);
+    const cookieUser = getCookie(CACHE_KEYS.user);
+    
+    if (cachedProducts) setProducts(cachedProducts);
+    if (cachedCategories) setCategories(cachedCategories);
+    if (cachedCart) setCart(cachedCart);
+    if (cookieUser) setUser(cookieUser);
+    
     loadData();
   }, []);
+
+  useEffect(() => {
+    setCache(CACHE_KEYS.cart, cart);
+  }, [cart]);
 
   async function loadData() {
     try {
       const [catsRes, prodsRes] = await Promise.all([
-        fetch('/api/categories'),
-        fetch('/api/products')
+        fetch('/api/categories', { next: { revalidate: 60 } }),
+        fetch('/api/products', { next: { revalidate: 60 } })
       ]);
       
       const cats = await catsRes.json();
       const prods = await prodsRes.json();
       
-      if (cats?.length) setCategories(cats);
-      if (prods?.length) setProducts(prods.map(p => ({...p, image: p.image || ''})));
+      if (cats?.length) {
+        setCategories(cats);
+        setCache(CACHE_KEYS.categories, cats);
+      }
+      if (prods?.length) {
+        const mapped = prods.map(p => ({...p, image: p.image || ''}));
+        setProducts(mapped);
+        setCache(CACHE_KEYS.products, mapped);
+      }
     } catch (e) {
       console.error('Failed to load data:', e);
     }
@@ -67,7 +131,7 @@ export default function Home() {
     setTimeout(() => {
       const loader = document.getElementById('loader');
       if (loader) loader.classList.add('out');
-    }, 800);
+    }, 500);
   }
 
   function showToast(msg) {
@@ -85,29 +149,33 @@ export default function Home() {
       }
       return [...prev, {...product, qty}];
     });
-    showToast('✓ Added to bag');
+    showToast(isMobile ? '✓ Added!' : '✓ Added to bag');
   }
 
-  function updateCartQty(id, delta) {
+  const updateCartQty = useCallback((id, delta) => {
     setCart(prev => prev.map(item => 
       item.id === id ? {...item, qty: Math.max(1, item.qty + delta)} : item
     ).filter(item => item.qty > 0));
-  }
+  }, []);
 
-  function removeFromCart(id) {
+  const removeFromCart = useCallback((id) => {
     setCart(prev => prev.filter(item => item.id !== id));
-  }
+  }, []);
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   function handleUserLogin(userData) {
     setUser(userData);
+    setCookie(CACHE_KEYS.user, userData);
     setShowUserLogin(false);
+    showToast('✓ Welcome back!');
   }
 
   function handleUserLogout() {
     setUser(null);
+    setCookie(CACHE_KEYS.user, '', -1);
     setShowUserAccount(false);
+    showToast('✓ Signed out');
   }
 
   function openProductModal(product) {
@@ -134,21 +202,23 @@ export default function Home() {
         onCartClick={() => setShowCart(true)}
         onUserClick={() => user ? setShowUserAccount(true) : setShowUserLogin(true)}
         user={user}
+        isMobile={isMobile}
       />
 
-      <Hero />
-      <Categories categories={categories} onCategoryClick={(cat) => {setFilter(cat); document.getElementById('shop')?.scrollIntoView({behavior:'smooth'})}} />
+      <Hero isMobile={isMobile} />
+      <Categories categories={categories} onCategoryClick={(cat) => {setFilter(cat); document.getElementById('shop')?.scrollIntoView({behavior:'smooth'})}} isMobile={isMobile} />
       <Shop 
         products={products} 
         filter={filter} 
         onFilterChange={setFilter}
         onAddToCart={addToCart}
         onProductClick={openProductModal}
+        isMobile={isMobile}
       />
-      <Featured onAddToCart={addToCart} />
-      <Philosophy />
-      <Testimonials />
-      <Footer />
+      <Featured onAddToCart={addToCart} isMobile={isMobile} />
+      <Philosophy isMobile={isMobile} />
+      <Testimonials isMobile={isMobile} />
+      <Footer isMobile={isMobile} />
 
       {showCart && (
         <CartPanel 
@@ -157,6 +227,7 @@ export default function Home() {
           onClose={() => setShowCart(false)}
           onUpdateQty={updateCartQty}
           onRemove={removeFromCart}
+          isMobile={isMobile}
         />
       )}
 

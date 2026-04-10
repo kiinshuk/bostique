@@ -1,9 +1,84 @@
 'use client';
 
-export default function Shop({ products, filter, onFilterChange, onAddToCart, onProductClick }) {
+export default function Shop({ products, filter, onFilterChange, onAddToCart, onProductClick, isMobile }) {
   const filteredProducts = filter === 'All' 
     ? products 
     : products.filter(p => p.category === filter);
+
+  if (isMobile) {
+    return (
+      <section style={{ padding: '40px 20px', background: '#FAFAF8' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#6B6560', marginBottom: '5px' }}>The Collection</p>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 300 }}>Shop <em style={{ fontStyle: 'italic', color: '#B05C2A' }}>Bostique</em></h2>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '15px', marginBottom: '20px' }}>
+          {['All', 'Duffel Bag', 'Carry Bag', 'Backpack', 'Cushion Cover'].map(f => (
+            <button 
+              key={f} 
+              onClick={() => onFilterChange(f)}
+              style={{ 
+                padding: '8px 16px', 
+                border: filter === f ? '1px solid #C8A97A' : '1px solid #ddd',
+                background: filter === f ? '#C8A97A' : 'white',
+                color: filter === f ? 'white' : '#333',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontSize: '0.75rem',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {f === 'All' ? 'All' : f === 'Duffel Bag' ? 'Duffel' : f === 'Carry Bag' ? 'Carry' : f === 'Cushion Cover' ? 'Cushion' : f}
+            </button>
+          ))}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          {filteredProducts.map(product => (
+            <div 
+              key={product.id} 
+              onClick={() => onProductClick(product)}
+              style={{ 
+                background: 'white', borderRadius: '10px', overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+              }}
+            >
+              <div style={{ height: '120px', background: '#F4F1EC', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                {product.image ? (
+                  <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ fontSize: '2.5rem' }}>{product.emoji}</span>
+                )}
+                {product.badge && (
+                  <span style={{ 
+                    position: 'absolute', top: '6px', right: '6px', 
+                    background: product.badge === 'Sale' ? '#C0392B' : '#27AE60',
+                    color: 'white', padding: '3px 6px', borderRadius: '4px',
+                    fontSize: '0.55rem', fontWeight: 500
+                  }}>
+                    {product.badge}
+                  </span>
+                )}
+              </div>
+              <div style={{ padding: '10px' }}>
+                <p style={{ fontSize: '0.6rem', color: '#6B6560', marginBottom: '2px' }}>{product.category}</p>
+                <h3 style={{ fontSize: '0.8rem', fontWeight: 500, marginBottom: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</h3>
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#B05C2A', marginBottom: '8px' }}>₹{product.price.toLocaleString()}</p>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
+                  style={{ 
+                    width: '100%', padding: '8px', background: '#0D0D0B', color: 'white', 
+                    border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem'
+                  }}
+                >
+                  Add to Bag
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="shop" style={{ padding: '80px 5%', background: '#FAFAF8' }}>
@@ -30,10 +105,7 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
                 transition: 'all 0.2s'
               }}
             >
-              {f === 'All' ? 'All' : 
-               f === 'Duffel Bag' ? 'Duffel' : 
-               f === 'Carry Bag' ? 'Carry' : 
-               f === 'Cushion Cover' ? 'Cushion' : f}
+              {f === 'All' ? 'All' : f === 'Duffel Bag' ? 'Duffel' : f === 'Carry Bag' ? 'Carry' : f === 'Cushion Cover' ? 'Cushion' : f}
             </button>
           ))}
         </div>
@@ -44,9 +116,7 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
             key={product.id} 
             onClick={() => onProductClick(product)}
             style={{ 
-              background: 'white', 
-              borderRadius: '12px', 
-              overflow: 'hidden',
+              background: 'white', borderRadius: '12px', overflow: 'hidden',
               boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
               cursor: 'pointer',
               transition: 'transform 0.2s, box-shadow 0.2s'

@@ -1,6 +1,32 @@
 'use client';
 
-export default function Categories({ categories, onCategoryClick }) {
+export default function Categories({ categories, onCategoryClick, isMobile }) {
+  if (isMobile) {
+    return (
+      <section style={{ padding: '40px 20px', background: '#FAFAF8' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <p style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#6B6560', marginBottom: '5px' }}>Browse</p>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 300 }}>Collections</h2>
+        </div>
+        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px' }}>
+          {categories.map(cat => (
+            <div 
+              key={cat.id} 
+              onClick={() => onCategoryClick(cat.name)}
+              style={{ 
+                minWidth: '140px', padding: '15px', background: 'white', borderRadius: '10px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.06)', textAlign: 'center', cursor: 'pointer'
+              }}
+            >
+              <div style={{ fontSize: '2rem', marginBottom: '8px' }}>{cat.icon}</div>
+              <div style={{ fontWeight: 500, fontSize: '0.85rem' }}>{cat.name}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="categories">
       <div className="section-head">

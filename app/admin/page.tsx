@@ -22,9 +22,12 @@ export default function Dashboard() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   
   const [products, setProducts] = useState(fallbackProducts);
   const [categories, setCategories] = useState(fallbackCategories);
+  const [users, setUsers] = useState([]);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [prodForm, setProdForm] = useState({ id: null, name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active', image: '' });
   const [catForm, setCatForm] = useState({ name: '', icon: '' });
@@ -33,15 +36,28 @@ export default function Dashboard() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const fileInputRef = useRef(null);
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     try {
-      const [catsRes, prodsRes] = await Promise.all([fetch('/api/categories'), fetch('/api/products')]);
+      const [catsRes, prodsRes, usersRes] = await Promise.all([
+        fetch('/api/categories'),
+        fetch('/api/products'),
+        fetch('/api/users')
+      ]);
       const cats = await catsRes.json();
       const prods = await prodsRes.json();
+      const usersData = await usersRes.json();
       if (cats?.length) setCategories(cats);
       if (prods?.length) setProducts(prods);
+      if (usersData?.length) setUsers(usersData);
     } catch (e) { console.error(e); }
   }
 
@@ -167,26 +183,48 @@ export default function Dashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f5f5f5' }}>
-      <header style={{ background: '#333', color: 'white', padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ fontSize: '20px' }}>Bostique Admin</h1>
-        <a href="/" style={{ color: 'white', fontSize: '14px' }}>View Store →</a>
+      <header style={{ background: '#333', color: 'white', padding: isMobile ? '12px 15px' : '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {isMobile && (
+            <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer' }}>☰</button>
+          )}
+          <h1 style={{ fontSize: isMobile ? '1rem' : '20px' }}>Bostique Admin</h1>
+        </div>
+        <a href="/" style={{ color: 'white', fontSize: isMobile ? '0.75rem' : '14px' }}>View Store →</a>
       </header>
       
-      <div style={{ display: 'flex', minHeight: 'calc(100vh - 60px)' }}>
-        <aside style={{ width: '220px', background: 'white', borderRight: '1px solid #ddd', padding: '20px 0' }}>
-          {['dashboard', 'products', 'add-product', 'categories', 'orders', 'users'].map(item => (
-            <button key={item} onClick={() => { setActiveSection(item); if (item === 'add-product') resetForm(); }} style={{ display: 'block', width: '100%', padding: '12px 20px', textAlign: 'left', border: 'none', background: activeSection === item ? '#f0f0f0' : 'transparent', cursor: 'pointer', fontSize: '14px' }}>
-              {item === 'dashboard' && '📊 '}Dashboard
-              {item === 'products' && '📦 '}Products
-              {item === 'add-product' && '➕ '}Add/Edit Product
-              {item === 'categories' && '📁 '}Categories
-              {item === 'orders' && '💬 '}Orders
-              {item === 'users' && '👥 '}Users
-            </button>
-          ))}
-        </aside>
-        
-        <main style={{ flex: 1, padding: '30px', overflowY: 'auto' }}>
+      <div style={{ display: 'flex', minHeight: 'calc(100vh - 60px)', position: 'relative' }}>
+        {!isMobile && (
+          <aside style={{ width: '220px', background: 'white', borderRight: '1px solid #ddd', padding: '20px 0', flexShrink: 0 }}>
+            {['dashboard', 'products', 'add-product', 'categories', 'orders', 'users'].map(item => (
+              <button key={item} onClick={() => { setActiveSection(item); if (item === 'add-product') resetForm(); }} style={{ display: 'block', width: '100%', padding: '12px 20px', textAlign: 'left', border: 'none', background: activeSection === item ? '#f0f0f0' : 'transparent', cursor: 'pointer', fontSize: '14px' }}>
+                {item === 'dashboard' && '📊 '}Dashboard
+                {item === 'products' && '📦 '}Products
+                {item === 'add-product' && '➕ '}Add/Edit Product
+                {item === 'categories' && '📁 '}Categories
+                {item === 'orders' && '💬 '}Orders
+                {item === 'users' && '👥 '}Users
+              </button>
+            ))}
+          </aside>
+        )}
+
+        {isMobile && menuOpen && (
+          <div style={{ position: 'fixed', top: '60px', left: 0, bottom: 0, width: '250px', background: 'white', boxShadow: '2px 0 10px rgba(0,0,0,0.1)', zIndex: 99, overflow: 'auto' }}>
+            {['dashboard', 'products', 'add-product', 'categories', 'orders', 'users'].map(item => (
+              <button key={item} onClick={() => { setActiveSection(item); setMenuOpen(false); if (item === 'add-product') resetForm(); }} style={{ display: 'block', width: '100%', padding: '15px 20px', textAlign: 'left', border: 'none', background: activeSection === item ? '#f0f0f0' : 'transparent', cursor: 'pointer', fontSize: '14px', borderBottom: '1px solid #eee' }}>
+                {item === 'dashboard' && '📊 '}Dashboard
+                {item === 'products' && '📦 '}Products
+                {item === 'add-product' && '➕ '}Add/Edit Product
+                {item === 'categories' && '📁 '}Categories
+                {item === 'orders' && '💬 '}Orders
+                {item === 'users' && '👥 '}Users
+              </button>
+            ))}
+          </div>
+        )}
+
+        <main style={{ flex: 1, padding: isMobile ? '15px' : '30px', overflowY: 'auto' }}>
           {activeSection === 'dashboard' && (
             <div>
               <h2 style={{ marginBottom: '20px' }}>Dashboard</h2>
@@ -380,8 +418,35 @@ export default function Dashboard() {
 
           {activeSection === 'users' && (
             <div>
-              <h2 style={{ marginBottom: '20px' }}>Users</h2>
-              <div style={{ background: 'white', padding: '30px', borderRadius: '8px', textAlign: 'center', color: '#666' }}>No registered users yet</div>
+              <h2 style={{ marginBottom: '20px' }}>Users ({users.length})</h2>
+              {users.length === 0 ? (
+                <div style={{ background: 'white', padding: '30px', borderRadius: '8px', textAlign: 'center', color: '#666' }}>No registered users yet</div>
+              ) : (
+                <div style={{ background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead style={{ background: '#f5f5f5' }}>
+                      <tr>
+                        <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>ID</th>
+                        <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Name</th>
+                        <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Email</th>
+                        <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Phone</th>
+                        <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Joined</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map(u => (
+                        <tr key={u.id} style={{ borderTop: '1px solid #eee' }}>
+                          <td style={{ padding: '12px' }}>{u.id}</td>
+                          <td style={{ padding: '12px', fontWeight: 500 }}>{u.name}</td>
+                          <td style={{ padding: '12px', color: '#666' }}>{u.email}</td>
+                          <td style={{ padding: '12px' }}>{u.phone || '-'}</td>
+                          <td style={{ padding: '12px', fontSize: '0.85rem', color: '#666' }}>{u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
         </main>

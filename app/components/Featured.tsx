@@ -1,6 +1,25 @@
 'use client';
 
-export default function Featured({ onAddToCart }) {
+export default function Featured({ onAddToCart, isMobile }) {
+  if (isMobile) {
+    return (
+      <section style={{ padding: '40px 20px', background: '#1C1C1A', color: 'white' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <span style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: 'rgba(250,250,248,0.5)' }}>Editor's Pick</span>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 300, marginTop: '5px' }}>The <em style={{ fontStyle: 'italic', color: '#C8A97A' }}>Expedition</em> Duffel</h2>
+        </div>
+        <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', marginBottom: '15px', lineHeight: 1.6 }}>
+          Full-grain leather weekend bag with weatherproof canvas base.
+        </p>
+        <p style={{ fontSize: '1.25rem', fontWeight: 600, color: '#C8A97A', marginBottom: '15px' }}>₹3,499</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <button onClick={() => onAddToCart({id:1,name:'Expedition Duffel',category:'Duffel Bag',price:3499,emoji:'🧳',desc:'Full-grain leather weekend bag.'})} style={{ padding: '14px', background: 'white', color: '#1C1C1A', border: 'none', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 500 }}>Add to Bag</button>
+          <a href="https://wa.me/919084736334?text=Hi%20Bostique!%20I%27m%20interested%20in%20the%20Expedition%20Duffel." target="_blank" style={{ padding: '14px', background: '#25D366', color: 'white', border: 'none', borderRadius: '6px', fontSize: '0.85rem', textAlign: 'center', textDecoration: 'none' }}>💬 Order on WhatsApp</a>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="feature">
       <div className="feat-art">
