@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
 
 const fallbackProducts = [
   {id:1,name:'Expedition Duffel',category:'Duffel Bag',category_id:1,price:3499,emoji:'🧳',desc:'Full-grain leather weekend bag.',badge:'New',status:'active',image:''},
@@ -27,9 +26,12 @@ export default function Dashboard() {
   const [products, setProducts] = useState(fallbackProducts);
   const [categories, setCategories] = useState(fallbackCategories);
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [prodForm, setProdForm] = useState({ name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active' });
+  const [prodForm, setProdForm] = useState({ id: null, name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active', image: '' });
   const [catForm, setCatForm] = useState({ name: '', icon: '' });
   const [toast, setToast] = useState('');
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => { loadData(); }, []);
 
@@ -57,28 +59,87 @@ export default function Dashboard() {
     setTimeout(() => setToast(''), 3000);
   }
 
+  function resetForm() {
+    setProdForm({ id: null, name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active', image: '' });
+  }
+
+  function editProduct(product) {
+    setProdForm({
+      id: product.id,
+      name: product.name,
+      category_id: String(product.category_id),
+      price: String(product.price),
+      emoji: product.emoji || '',
+      description: product.desc || product.description || '',
+      badge: product.badge || '',
+      status: product.status,
+      image: product.image || ''
+    });
+    setActiveSection('add-product');
+  }
+
+  function openImageModal(product) {
+    setSelectedProduct(product);
+    setShowImageModal(true);
+  }
+
+  async function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file || !selectedProduct) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const base64 = event.target.result;
+      const updatedProducts = products.map(p => 
+        p.id === selectedProduct.id ? { ...p, image: String(base64) } : p
+      );
+      setProducts(updatedProducts);
+      setSelectedProduct(null);
+      setShowImageModal(false);
+      showToast('Image uploaded!');
+    };
+    reader.readAsDataURL(file);
+  }
+
   async function saveProduct() {
     if (!prodForm.name || !prodForm.price) {
       showToast('Please fill required fields');
       return;
     }
+    
     const productData = {
-      ...prodForm,
+      name: prodForm.name,
       category_id: parseInt(prodForm.category_id),
       price: parseInt(prodForm.price) || 0,
+      emoji: prodForm.emoji,
+      description: prodForm.description,
+      badge: prodForm.badge,
+      status: prodForm.status,
+      image: prodForm.image,
       category: categories.find(c => c.id === parseInt(prodForm.category_id))?.name || 'Unknown'
     };
-    try {
-      await fetch('/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) });
-    } catch(e) {}
-    setProducts([...products, { ...productData, id: Date.now(), status: 'active', image: '', desc: productData.description || '' }]);
-    showToast('Product saved!');
-    setProdForm({ name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active' });
+
+    if (prodForm.id) {
+      const updatedProducts = products.map(p => 
+        p.id === prodForm.id ? { ...p, ...productData, desc: productData.description } : p
+      );
+      setProducts(updatedProducts);
+      showToast('Product updated!');
+    } else {
+      const newProduct = { ...productData, id: Date.now(), desc: productData.description };
+      setProducts([...products, newProduct]);
+      showToast('Product created!');
+    }
+    
+    resetForm();
+    setActiveSection('products');
   }
 
   function deleteProduct(id) {
-    setProducts(products.filter(p => p.id !== id));
-    showToast('Product deleted');
+    if (confirm('Delete this product?')) {
+      setProducts(products.filter(p => p.id !== id));
+      showToast('Product deleted');
+    }
   }
 
   async function addCategory() {
@@ -114,10 +175,10 @@ export default function Dashboard() {
       <div style={{ display: 'flex', minHeight: 'calc(100vh - 60px)' }}>
         <aside style={{ width: '220px', background: 'white', borderRight: '1px solid #ddd', padding: '20px 0' }}>
           {['dashboard', 'products', 'add-product', 'categories', 'orders', 'users'].map(item => (
-            <button key={item} onClick={() => setActiveSection(item)} style={{ display: 'block', width: '100%', padding: '12px 20px', textAlign: 'left', border: 'none', background: activeSection === item ? '#f0f0f0' : 'transparent', cursor: 'pointer', fontSize: '14px' }}>
+            <button key={item} onClick={() => { setActiveSection(item); if (item === 'add-product') resetForm(); }} style={{ display: 'block', width: '100%', padding: '12px 20px', textAlign: 'left', border: 'none', background: activeSection === item ? '#f0f0f0' : 'transparent', cursor: 'pointer', fontSize: '14px' }}>
               {item === 'dashboard' && '📊 '}Dashboard
               {item === 'products' && '📦 '}Products
-              {item === 'add-product' && '➕ '}Add Product
+              {item === 'add-product' && '➕ '}Add/Edit Product
               {item === 'categories' && '📁 '}Categories
               {item === 'orders' && '💬 '}Orders
               {item === 'users' && '👥 '}Users
@@ -125,11 +186,11 @@ export default function Dashboard() {
           ))}
         </aside>
         
-        <main style={{ flex: 1, padding: '30px' }}>
+        <main style={{ flex: 1, padding: '30px', overflowY: 'auto' }}>
           {activeSection === 'dashboard' && (
             <div>
               <h2 style={{ marginBottom: '20px' }}>Dashboard</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
                 <div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '32px', fontWeight: 'bold' }}>{products.filter(p => p.status === 'active').length}</div>
                   <div style={{ color: '#666', fontSize: '14px' }}>Products</div>
@@ -147,26 +208,64 @@ export default function Dashboard() {
                   <div style={{ color: '#666', fontSize: '14px' }}>WhatsApp</div>
                 </div>
               </div>
+              
+              <h3 style={{ marginBottom: '15px', fontSize: '18px' }}>Recent Products</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
+                {products.slice(0, 4).map(p => (
+                  <div key={p.id} style={{ background: 'white', padding: '15px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '50px', height: '50px', background: '#f5f5f5', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {p.image ? <img src={p.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} /> : <span style={{ fontSize: '24px' }}>{p.emoji}</span>}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 500, fontSize: '14px' }}>{p.name}</div>
+                      <div style={{ fontSize: '12px', color: '#666' }}>₹{p.price}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {activeSection === 'products' && (
             <div>
-              <h2 style={{ marginBottom: '20px' }}>All Products</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2>All Products</h2>
+                <button onClick={() => { resetForm(); setActiveSection('add-product'); }} style={{ padding: '10px 20px', background: '#333', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>+ Add Product</button>
+              </div>
               <div style={{ background: 'white', borderRadius: '8px', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead style={{ background: '#f5f5f5' }}>
-                    <tr><th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Icon</th><th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Name</th><th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Category</th><th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Price</th><th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Status</th><th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Action</th></tr>
+                    <tr>
+                      <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px', width: '60px' }}>Image</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Name</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Category</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Price</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Status</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Actions</th>
+                    </tr>
                   </thead>
                   <tbody>
                     {products.map(p => (
                       <tr key={p.id} style={{ borderTop: '1px solid #eee' }}>
-                        <td style={{ padding: '12px' }}>{p.emoji}</td>
-                        <td style={{ padding: '12px' }}>{p.name}</td>
-                        <td style={{ padding: '12px' }}>{p.category}</td>
-                        <td style={{ padding: '12px' }}>₹{p.price}</td>
-                        <td style={{ padding: '12px' }}><span style={{ background: p.status === 'active' ? '#d4edda' : '#f8d7da', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>{p.status}</span></td>
-                        <td style={{ padding: '12px' }}><button onClick={() => deleteProduct(p.id)} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Delete</button></td>
+                        <td style={{ padding: '12px' }}>
+                          <div style={{ width: '40px', height: '40px', background: '#f5f5f5', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => openImageModal(p)}>
+                            {p.image ? <img src={p.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} /> : <span style={{ fontSize: '18px' }}>📷</span>}
+                          </div>
+                        </td>
+                        <td style={{ padding: '12px', fontWeight: 500 }}>{p.name}</td>
+                        <td style={{ padding: '12px', color: '#666' }}>{p.category}</td>
+                        <td style={{ padding: '12px' }}>₹{p.price.toLocaleString()}</td>
+                        <td style={{ padding: '12px' }}>
+                          <span style={{ background: p.status === 'active' ? '#d4edda' : '#f8d7da', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>
+                            {p.status === 'active' ? 'Active' : 'Draft'}
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px' }}>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <button onClick={() => editProduct(p)} style={{ background: '#007bff', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Edit</button>
+                            <button onClick={() => deleteProduct(p.id)} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Delete</button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -177,22 +276,63 @@ export default function Dashboard() {
 
           {activeSection === 'add-product' && (
             <div>
-              <h2 style={{ marginBottom: '20px' }}>Add Product</h2>
+              <h2 style={{ marginBottom: '20px' }}>{prodForm.id ? 'Edit Product' : 'Add Product'}</h2>
               <div style={{ background: 'white', padding: '25px', borderRadius: '8px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                  <div><label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Product Name *</label><input value={prodForm.name} onChange={e => setProdForm({...prodForm, name: e.target.value})} placeholder="e.g. Classic Leather Duffel" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} /></div>
-                  <div><label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Category *</label><select value={prodForm.category_id} onChange={e => setProdForm({...prodForm, category_id: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Product Name *</label>
+                    <input value={prodForm.name} onChange={e => setProdForm({...prodForm, name: e.target.value})} placeholder="e.g. Classic Leather Duffel" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Category *</label>
+                    <select value={prodForm.category_id} onChange={e => setProdForm({...prodForm, category_id: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                      {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
                 </div>
+                
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                  <div><label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Price (₹) *</label><input type="number" value={prodForm.price} onChange={e => setProdForm({...prodForm, price: e.target.value})} placeholder="1999" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} /></div>
-                  <div><label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Emoji Icon</label><input value={prodForm.emoji} onChange={e => setProdForm({...prodForm, emoji: e.target.value})} placeholder="🧳" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} /></div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Price (₹) *</label>
+                    <input type="number" value={prodForm.price} onChange={e => setProdForm({...prodForm, price: e.target.value})} placeholder="1999" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Emoji Icon</label>
+                    <input value={prodForm.emoji} onChange={e => setProdForm({...prodForm, emoji: e.target.value})} placeholder="🧳" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
+                  </div>
                 </div>
-                <div style={{ marginBottom: '20px' }}><label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Description</label><textarea value={prodForm.description} onChange={e => setProdForm({...prodForm, description: e.target.value})} placeholder="Describe the product..." rows={3} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} /></div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Product Image URL</label>
+                  <input value={prodForm.image} onChange={e => setProdForm({...prodForm, image: e.target.value})} placeholder="https://example.com/image.jpg" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
+                  {prodForm.image && <img src={prodForm.image} alt="Preview" style={{ marginTop: '10px', maxWidth: '200px', borderRadius: '4px' }} />}
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Description</label>
+                  <textarea value={prodForm.description} onChange={e => setProdForm({...prodForm, description: e.target.value})} placeholder="Describe the product..." rows={4} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
+                </div>
+                
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                  <div><label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Status</label><select value={prodForm.status} onChange={e => setProdForm({...prodForm, status: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}><option value="active">Active</option><option value="draft">Draft</option></select></div>
-                  <div><label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Badge (optional)</label><input value={prodForm.badge} onChange={e => setProdForm({...prodForm, badge: e.target.value})} placeholder="New / Sale" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} /></div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Status</label>
+                    <select value={prodForm.status} onChange={e => setProdForm({...prodForm, status: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                      <option value="active">Active</option>
+                      <option value="draft">Draft</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Badge (optional)</label>
+                    <input value={prodForm.badge} onChange={e => setProdForm({...prodForm, badge: e.target.value})} placeholder="New / Sale / Limited" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
+                  </div>
                 </div>
-                <button onClick={saveProduct} style={{ background: '#333', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '4px', cursor: 'pointer' }}>Save Product</button>
+                
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button onClick={saveProduct} style={{ background: '#333', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '4px', cursor: 'pointer' }}>
+                    {prodForm.id ? 'Update Product' : 'Save Product'}
+                  </button>
+                  {prodForm.id && <button onClick={resetForm} style={{ background: 'transparent', color: '#666', border: '1px solid #ddd', padding: '12px 24px', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>}
+                </div>
               </div>
             </div>
           )}
@@ -208,7 +348,7 @@ export default function Dashboard() {
                   <tbody>
                     {categories.map(c => (
                       <tr key={c.id} style={{ borderTop: '1px solid #eee' }}>
-                        <td style={{ padding: '12px' }}>{c.icon}</td>
+                        <td style={{ padding: '12px', fontSize: '24px' }}>{c.icon}</td>
                         <td style={{ padding: '12px' }}>{c.name}</td>
                         <td style={{ padding: '12px' }}>{products.filter(p => p.category_id === c.id).length}</td>
                       </tr>
@@ -246,6 +386,40 @@ export default function Dashboard() {
           )}
         </main>
       </div>
+
+      {showImageModal && selectedProduct && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }} onClick={() => setShowImageModal(false)}>
+          <div style={{ background: 'white', padding: '30px', borderRadius: '8px', maxWidth: '400px', width: '90%' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ marginBottom: '15px' }}>Upload Image for {selectedProduct.name}</h3>
+            <div style={{ marginBottom: '15px', padding: '20px', background: '#f5f5f5', borderRadius: '6px', textAlign: 'center' }}>
+              {selectedProduct.image ? (
+                <img src={selectedProduct.image} alt="Current" style={{ maxWidth: '100%', borderRadius: '4px' }} />
+              ) : (
+                <p style={{ color: '#666' }}>No image currently</p>
+              )}
+            </div>
+            <input 
+              type="file" 
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              style={{ width: '100%', padding: '12px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginBottom: '10px' }}
+            >
+              Choose Image
+            </button>
+            <button 
+              onClick={() => setShowImageModal(false)}
+              style={{ width: '100%', padding: '12px', background: 'transparent', color: '#666', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {toast && <div style={{ position: 'fixed', bottom: '20px', right: '20px', background: '#333', color: 'white', padding: '12px 24px', borderRadius: '4px', zIndex: 9999 }}>{toast}</div>}
     </div>
