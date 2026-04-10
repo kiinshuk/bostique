@@ -1,18 +1,18 @@
-import type { Metadata } from 'next'
-import { Roboto } from 'next/font/google'
+import './globals.css'
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'BOSTIQUE — Crafted to Carry Your Story',
-  description: 'Premium bags and leather goods',
+  description: 'Premium bags and leather goods for those who move with intention.',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+      </head>
       <body>{children}</body>
     </html>
   )
