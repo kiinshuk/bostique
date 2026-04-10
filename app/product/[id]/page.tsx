@@ -41,11 +41,15 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [qty, setQty] = useState(1);
   const [toast, setToast] = useState('');
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
+
+    const cachedCart = getCache(CACHE_KEYS.cart) || [];
+    setCartCount(cachedCart.reduce((sum, item) => sum + item.qty, 0));
 
     loadData();
     return () => window.removeEventListener('resize', checkMobile);
@@ -122,22 +126,62 @@ export default function ProductPage() {
   const images = product.images || [];
   const hasMultipleImages = images.length > 1 && images[0];
 
+  const nextImage = () => {
+    setSelectedImage((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImage((prev) => (prev - 1 + images.length) % images.length);
+  };
+
   if (isMobile) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--color-cream-warm)' }}>
         <header style={{ background: 'var(--color-charcoal)', color: 'white', padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
           <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer' }}>←</button>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', letterSpacing: '0.1em' }}>BOSTIQUE</span>
-          <div style={{ width: '24px' }}></div>
+          <button onClick={() => router.push('/?cart=true')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
+            🛒
+            {cartCount > 0 && (
+              <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-cognac)', color: 'white', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {cartCount}
+              </span>
+            )}
+          </button>
         </header>
 
         <div style={{ padding: '20px' }}>
           <div style={{ position: 'relative', background: 'white', borderRadius: '12px', overflow: 'hidden', marginBottom: '20px' }}>
-            <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
               {images[selectedImage] ? (
                 <img src={images[selectedImage]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <span style={{ fontSize: '5rem' }}>{product.emoji}</span>
+              )}
+              
+              {hasMultipleImages && (
+                <>
+                  <button 
+                    onClick={prevImage}
+                    style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', width: '36px', height: '36px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                  >
+                    ‹
+                  </button>
+                  <button 
+                    onClick={nextImage}
+                    style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', width: '36px', height: '36px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                  >
+                    ›
+                  </button>
+                  <div style={{ position: 'absolute', bottom: '12px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '6px' }}>
+                    {images.filter(Boolean).map((_, idx) => (
+                      <div 
+                        key={idx}
+                        style={{ width: '8px', height: '8px', borderRadius: '50%', background: selectedImage === idx ? 'var(--color-cognac)' : 'rgba(255,255,255,0.5)' }}
+                      />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
             {product.badge && (
@@ -200,19 +244,57 @@ export default function ProductPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-cream-warm)', padding: '40px 0' }}>
+      <header style={{ background: 'var(--color-charcoal)', color: 'white', padding: '15px 0', position: 'sticky', top: 0, zIndex: 100, marginBottom: '40px' }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            ← Back
+          </button>
+          <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', letterSpacing: '0.1em' }}>BOSTIQUE</span>
+          <button onClick={() => router.push('/?cart=true')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
+            🛒
+            {cartCount > 0 && (
+              <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-cognac)', color: 'white', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {cartCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </header>
       <div className="container">
-        <button onClick={() => router.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          ← Back to Shop
-        </button>
-
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px' }}>
           <div>
-            <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', marginBottom: '16px' }}>
-              <div style={{ aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', marginBottom: '16px', position: 'relative' }}>
+              <div style={{ aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 {images[selectedImage] ? (
                   <img src={images[selectedImage]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <span style={{ fontSize: '10rem' }}>{product.emoji}</span>
+                )}
+
+                {hasMultipleImages && (
+                  <>
+                    <button 
+                      onClick={prevImage}
+                      style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    >
+                      ‹
+                    </button>
+                    <button 
+                      onClick={nextImage}
+                      style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    >
+                      ›
+                    </button>
+                    <div style={{ position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px' }}>
+                      {images.filter(Boolean).map((_, idx) => (
+                        <div 
+                          key={idx}
+                          style={{ width: '10px', height: '10px', borderRadius: '50%', background: selectedImage === idx ? 'var(--color-cognac)' : 'rgba(0,0,0,0.2)', cursor: 'pointer' }}
+                          onClick={() => setSelectedImage(idx)}
+                        />
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
               {product.badge && (
@@ -222,7 +304,8 @@ export default function ProductPage() {
               )}
             </div>
 
-            {hasMultipleImages && (
+            {/* Optional: Show thumbnails below for desktop */}
+            {hasMultipleImages && !isMobile && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
                 {images.filter(Boolean).map((img, idx) => (
                   <button 
