@@ -185,10 +185,8 @@ export default function Nav({ cartCount, onCartClick, onUserClick, user, isMobil
         </div>
         {menuOpen && (
           <div style={navStyles.mobileMenu}>
-            <a href="#categories" onClick={() => setMenuOpen(false)} style={navStyles.menuLink}>Collections</a>
             <a href="#shop" onClick={() => setMenuOpen(false)} style={navStyles.menuLink}>Shop</a>
-            <a href="#feature" onClick={() => setMenuOpen(false)} style={navStyles.menuLink}>Featured</a>
-            <a href="#philosophy" onClick={() => setMenuOpen(false)} style={navStyles.menuLink}>Story</a>
+            <a href="#philosophy" onClick={() => setMenuOpen(false)} style={navStyles.menuLink}>About</a>
             <button onClick={() => { setMenuOpen(false); onUserClick(); }} style={navStyles.menuBtnItem}>
               {user ? `👤 ${user.name}` : '👤 Account'}
             </button>
@@ -202,11 +200,8 @@ export default function Nav({ cartCount, onCartClick, onUserClick, user, isMobil
     <nav style={{...navStyles.nav, ...(scrolled ? navStyles.navScrolled : {})}}>
       <a href="#" style={navStyles.logo}>BOSTIQUE</a>
       <ul style={navStyles.links}>
-        <li><a href="#categories" className="nav-link" style={navStyles.link}>Collections</a></li>
-        <li><a href="#shop" className="nav-link" style={navStyles.link}>Shop</a></li>
-        <li><a href="#feature" className="nav-link" style={navStyles.link}>Featured</a></li>
-        <li><a href="#philosophy" className="nav-link" style={navStyles.link}>Story</a></li>
-        <li><a href="#testimonials" className="nav-link" style={navStyles.link}>Reviews</a></li>
+        <li><a href="#shop" style={navStyles.link}>Shop</a></li>
+        <li><a href="#philosophy" style={navStyles.link}>About</a></li>
       </ul>
       <div style={navStyles.actions}>
         <button onClick={onUserClick} style={navStyles.accountBtn}>

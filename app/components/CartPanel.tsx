@@ -1,11 +1,19 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 export default function CartPanel({ cart, total, onClose, onUpdateQty, onRemove, isMobile }) {
+  const router = useRouter();
   const waNumber = '919084736334';
   
   function handleOrder() {
     const message = 'Order: ' + cart.map(i => `${i.name} x${i.qty}`).join(', ') + ` | Total: ₹${total}`;
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+  }
+
+  function handleCheckout() {
+    onClose();
+    router.push('/checkout');
   }
 
   return (
@@ -34,7 +42,7 @@ export default function CartPanel({ cart, total, onClose, onUpdateQty, onRemove,
               {cart.map(item => (
                 <div key={item.id} style={{ display: 'flex', gap: isMobile ? '10px' : '15px', padding: isMobile ? '10px' : '15px', background: '#f9f9f9', borderRadius: '10px', alignItems: 'center' }}>
                   <div style={{ width: isMobile ? '50px' : '70px', height: isMobile ? '50px' : '70px', background: '#eee', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {item.image ? <img src={item.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} /> : <span style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>{item.emoji}</span>}
+                    {item.images && item.images[0] ? <img src={item.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} /> : item.image ? <img src={item.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} /> : <span style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>{item.emoji}</span>}
                   </div>
                   <div style={{ flex: 1 }}>
                     <h4 style={{ fontSize: isMobile ? '0.85rem' : '1rem', fontWeight: 500, marginBottom: '4px' }}>{item.name}</h4>
@@ -58,9 +66,14 @@ export default function CartPanel({ cart, total, onClose, onUpdateQty, onRemove,
               <span style={{ color: '#666' }}>Total</span>
               <span style={{ fontWeight: 700, fontSize: isMobile ? '1.2rem' : '1.3rem' }}>₹{total.toLocaleString()}</span>
             </div>
-            <button onClick={handleOrder} style={{ width: '100%', padding: isMobile ? '14px' : '16px', background: '#25D366', color: 'white', border: 'none', borderRadius: isMobile ? '8px' : '10px', fontSize: isMobile ? '0.95rem' : '1rem', fontWeight: 600, cursor: 'pointer' }}>
-              💬 Order via WhatsApp
-            </button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={handleCheckout} style={{ flex: 1, padding: isMobile ? '14px' : '16px', background: '#333', color: 'white', border: 'none', borderRadius: isMobile ? '8px' : '10px', fontSize: isMobile ? '0.95rem' : '1rem', fontWeight: 600, cursor: 'pointer' }}>
+                Checkout
+              </button>
+              <button onClick={handleOrder} style={{ flex: 1, padding: isMobile ? '14px' : '16px', background: '#25D366', color: 'white', border: 'none', borderRadius: isMobile ? '8px' : '10px', fontSize: isMobile ? '0.95rem' : '1rem', fontWeight: 600, cursor: 'pointer' }}>
+                💬 WhatsApp
+              </button>
+            </div>
           </div>
         )}
       </div>

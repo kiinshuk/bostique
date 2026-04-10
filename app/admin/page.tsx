@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef } from 'react';
 
 const fallbackProducts = [
-  {id:1,name:'Expedition Duffel',category:'Duffel Bag',category_id:1,price:3499,emoji:'🧳',desc:'Full-grain leather weekend bag.',badge:'New',status:'active',image:''},
-  {id:2,name:'City Slicker Duffel',category:'Duffel Bag',category_id:1,price:2799,emoji:'🧳',desc:'Compact leather duffel.',badge:'',status:'active',image:''},
-  {id:3,name:'Heritage Carry Tote',category:'Carry Bag',category_id:2,price:1899,emoji:'👜',desc:'Timeless everyday tote.',badge:'New',status:'active',image:''},
-  {id:4,name:'Market Carry Bag',category:'Carry Bag',category_id:2,price:1299,emoji:'👜',desc:'Durable canvas and leather.',badge:'',status:'active',image:''},
-  {id:5,name:'Urban Pro Backpack',category:'Backpack',category_id:3,price:2999,emoji:'🎒',desc:'Work-ready leather backpack.',badge:'New',status:'active',image:''},
-  {id:6,name:'Trail Backpack',category:'Backpack',category_id:3,price:2199,emoji:'🎒',desc:'Adventure-ready backpack.',badge:'',status:'active',image:''},
-  {id:7,name:'Cognac Cushion Cover',category:'Cushion Cover',category_id:4,price:899,emoji:'🛋️',desc:'Luxurious leather cushion.',badge:'New',status:'active',image:''},
-  {id:8,name:'Tan Leather Cushion Pair',category:'Cushion Cover',category_id:4,price:1699,emoji:'🪑',desc:'Set of 2 cushion covers.',badge:'Sale',status:'active',image:''}
+  {id:1,name:'Expedition Duffel',category:'Duffel Bag',category_id:1,price:3499,emoji:'🧳',desc:'Full-grain leather weekend bag.',badge:'New',status:'active',images:['']},
+  {id:2,name:'City Slicker Duffel',category:'Duffel Bag',category_id:1,price:2799,emoji:'🧳',desc:'Compact leather duffel.',badge:'',status:'active',images:['']},
+  {id:3,name:'Heritage Carry Tote',category:'Carry Bag',category_id:2,price:1899,emoji:'👜',desc:'Timeless everyday tote.',badge:'New',status:'active',images:['']},
+  {id:4,name:'Market Carry Bag',category:'Carry Bag',category_id:2,price:1299,emoji:'👜',desc:'Durable canvas and leather.',badge:'',status:'active',images:['']},
+  {id:5,name:'Urban Pro Backpack',category:'Backpack',category_id:3,price:2999,emoji:'🎒',desc:'Work-ready leather backpack.',badge:'New',status:'active',images:['']},
+  {id:6,name:'Trail Backpack',category:'Backpack',category_id:3,price:2199,emoji:'🎒',desc:'Adventure-ready backpack.',badge:'',status:'active',images:['']},
+  {id:7,name:'Cognac Cushion Cover',category:'Cushion Cover',category_id:4,price:899,emoji:'🛋️',desc:'Luxurious leather cushion.',badge:'New',status:'active',images:['']},
+  {id:8,name:'Tan Leather Cushion Pair',category:'Cushion Cover',category_id:4,price:1699,emoji:'🪑',desc:'Set of 2 cushion covers.',badge:'Sale',status:'active',images:['']}
 ];
 
 const fallbackCategories = [
@@ -29,11 +29,12 @@ export default function Dashboard() {
   const [categories, setCategories] = useState(fallbackCategories);
   const [users, setUsers] = useState([]);
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [prodForm, setProdForm] = useState({ id: null, name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active', image: '' });
+  const [prodForm, setProdForm] = useState({ id: null, name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active', images: [''] });
   const [catForm, setCatForm] = useState({ name: '', icon: '' });
   const [toast, setToast] = useState('');
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function Dashboard() {
   }
 
   function resetForm() {
-    setProdForm({ id: null, name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active', image: '' });
+    setProdForm({ id: null, name: '', category_id: '1', price: '', emoji: '', description: '', badge: '', status: 'active', images: [''] });
   }
 
   function editProduct(product) {
@@ -89,13 +90,14 @@ export default function Dashboard() {
       description: product.desc || product.description || '',
       badge: product.badge || '',
       status: product.status,
-      image: product.image || ''
+      images: product.images || ['']
     });
     setActiveSection('add-product');
   }
 
   function openImageModal(product) {
     setSelectedProduct(product);
+    setSelectedImageIndex(0);
     setShowImageModal(true);
   }
 
@@ -106,15 +108,45 @@ export default function Dashboard() {
     const reader = new FileReader();
     reader.onload = async (event) => {
       const base64 = event.target.result;
-      const updatedProducts = products.map(p => 
-        p.id === selectedProduct.id ? { ...p, image: String(base64) } : p
-      );
+      const updatedProducts = products.map(p => {
+        if (p.id === selectedProduct.id) {
+          const newImages = [...(p.images || [''])];
+          newImages[selectedImageIndex] = String(base64);
+          return { ...p, images: newImages };
+        }
+        return p;
+      });
       setProducts(updatedProducts);
-      setSelectedProduct(null);
-      setShowImageModal(false);
       showToast('Image uploaded!');
     };
     reader.readAsDataURL(file);
+  }
+
+  async function addMoreImages() {
+    if (!selectedProduct) return;
+    const updatedProducts = products.map(p => {
+      if (p.id === selectedProduct.id) {
+        return { ...p, images: [...(p.images || ['']), ''] };
+      }
+      return p;
+    });
+    setProducts(updatedProducts);
+    setSelectedProduct({ ...selectedProduct, images: [...(selectedProduct.images || ['']), ''] });
+    setSelectedImageIndex(selectedProduct.images?.length || 0);
+  }
+
+  async function removeImage(index: number) {
+    if (!selectedProduct) return;
+    const updatedProducts = products.map(p => {
+      if (p.id === selectedProduct.id) {
+        const newImages = (p.images || ['']).filter((_, i) => i !== index);
+        return { ...p, images: newImages.length ? newImages : [''] };
+      }
+      return p;
+    });
+    setProducts(updatedProducts);
+    setSelectedProduct({ ...selectedProduct, images: (selectedProduct.images || ['']).filter((_, i) => i !== index) });
+    showToast('Image removed');
   }
 
   async function saveProduct() {
@@ -131,7 +163,7 @@ export default function Dashboard() {
       description: prodForm.description,
       badge: prodForm.badge,
       status: prodForm.status,
-      image: prodForm.image,
+      images: prodForm.images,
       category: categories.find(c => c.id === parseInt(prodForm.category_id))?.name || 'Unknown'
     };
 
@@ -252,7 +284,7 @@ export default function Dashboard() {
                 {products.slice(0, 4).map(p => (
                   <div key={p.id} style={{ background: 'white', padding: '15px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{ width: '50px', height: '50px', background: '#f5f5f5', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {p.image ? <img src={p.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} /> : <span style={{ fontSize: '24px' }}>{p.emoji}</span>}
+                      {p.images && p.images[0] ? <img src={p.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} /> : <span style={{ fontSize: '24px' }}>{p.emoji}</span>}
                     </div>
                     <div>
                       <div style={{ fontWeight: 500, fontSize: '14px' }}>{p.name}</div>
@@ -287,7 +319,7 @@ export default function Dashboard() {
                       <tr key={p.id} style={{ borderTop: '1px solid #eee' }}>
                         <td style={{ padding: '12px' }}>
                           <div style={{ width: '40px', height: '40px', background: '#f5f5f5', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => openImageModal(p)}>
-                            {p.image ? <img src={p.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} /> : <span style={{ fontSize: '18px' }}>📷</span>}
+                            {p.images && p.images[0] ? <img src={p.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} /> : <span style={{ fontSize: '18px' }}>📷</span>}
                           </div>
                         </td>
                         <td style={{ padding: '12px', fontWeight: 500 }}>{p.name}</td>
@@ -341,9 +373,35 @@ export default function Dashboard() {
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>Product Image URL</label>
-                  <input value={prodForm.image} onChange={e => setProdForm({...prodForm, image: e.target.value})} placeholder="https://example.com/image.jpg" style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
-                  {prodForm.image && <img src={prodForm.image} alt="Preview" style={{ marginTop: '10px', maxWidth: '200px', borderRadius: '4px' }} />}
+                  <label style={{ display: 'block', marginBottom: '10px', fontSize: '14px', fontWeight: '500' }}>Product Images (up to 4)</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '10px' }}>
+                    {prodForm.images.map((img, idx) => (
+                      <div key={idx} style={{ position: 'relative', aspectRatio: '1', background: '#f5f5f5', borderRadius: '6px', overflow: 'hidden', border: '1px solid #ddd' }}>
+                        {img ? (
+                          <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999' }}>{idx + 1}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                    {prodForm.images.map((img, idx) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <input 
+                          type="text" 
+                          value={img} 
+                          onChange={(e) => {
+                            const newImages = [...prodForm.images];
+                            newImages[idx] = e.target.value;
+                            setProdForm({...prodForm, images: newImages});
+                          }}
+                          placeholder={`Image ${idx + 1} URL`}
+                          style={{ width: '200px', padding: '8px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '12px' }}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
@@ -454,15 +512,36 @@ export default function Dashboard() {
 
       {showImageModal && selectedProduct && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }} onClick={() => setShowImageModal(false)}>
-          <div style={{ background: 'white', padding: '30px', borderRadius: '8px', maxWidth: '400px', width: '90%' }} onClick={e => e.stopPropagation()}>
-            <h3 style={{ marginBottom: '15px' }}>Upload Image for {selectedProduct.name}</h3>
-            <div style={{ marginBottom: '15px', padding: '20px', background: '#f5f5f5', borderRadius: '6px', textAlign: 'center' }}>
-              {selectedProduct.image ? (
-                <img src={selectedProduct.image} alt="Current" style={{ maxWidth: '100%', borderRadius: '4px' }} />
-              ) : (
-                <p style={{ color: '#666' }}>No image currently</p>
+          <div style={{ background: 'white', padding: '30px', borderRadius: '8px', maxWidth: '500px', width: '90%' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ marginBottom: '15px' }}>Manage Images for {selectedProduct.name}</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
+              {(selectedProduct.images || ['']).map((img, idx) => (
+                <div key={idx} style={{ position: 'relative', aspectRatio: '1', background: '#f5f5f5', borderRadius: '6px', overflow: 'hidden', border: selectedImageIndex === idx ? '2px solid #007bff' : '1px solid #ddd' }} onClick={() => setSelectedImageIndex(idx)}>
+                  {img ? (
+                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999', fontSize: '12px' }}>Empty</div>
+                  )}
+                  {(selectedProduct.images || []).length > 1 && (
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); removeImage(idx); }}
+                      style={{ position: 'absolute', top: '2px', right: '2px', background: '#dc3545', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
+              {(selectedProduct.images || ['']).length < 4 && (
+                <button 
+                  onClick={addMoreImages}
+                  style={{ aspectRatio: '1', background: '#f5f5f5', border: '2px dashed #ddd', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: '24px' }}
+                >
+                  +
+                </button>
               )}
             </div>
+            <p style={{ fontSize: '12px', color: '#666', marginBottom: '15px' }}>Click on an image to select it for upload</p>
             <input 
               type="file" 
               accept="image/*"
@@ -474,14 +553,21 @@ export default function Dashboard() {
               onClick={() => fileInputRef.current?.click()}
               style={{ width: '100%', padding: '12px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginBottom: '10px' }}
             >
-              Choose Image
+              Upload Image for Slot {selectedImageIndex + 1}
             </button>
-            <button 
-              onClick={() => setShowImageModal(false)}
-              style={{ width: '100%', padding: '12px', background: 'transparent', color: '#666', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer' }}
-            >
-              Close
-            </button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {selectedProduct.images?.[selectedImageIndex] && (
+                <div style={{ flex: 1, padding: '10px', background: '#f5f5f5', borderRadius: '4px', fontSize: '12px', color: '#666' }}>
+                  Current: Image {selectedImageIndex + 1}
+                </div>
+              )}
+              <button 
+                onClick={() => setShowImageModal(false)}
+                style={{ padding: '12px 24px', background: 'transparent', color: '#666', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer' }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -169,7 +169,7 @@ const shopStyles = {
   mobileGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '12px',
+    gap: '16px',
   },
   mobileCard: {
     background: 'var(--color-surface)',
@@ -177,9 +177,10 @@ const shopStyles = {
     overflow: 'hidden',
     boxShadow: 'var(--shadow-md)',
     cursor: 'pointer',
+    border: '1px solid var(--color-line)',
   },
   mobileImage: {
-    height: '120px',
+    height: '140px',
     background: 'var(--color-cream-warm)',
     display: 'flex',
     alignItems: 'center',
@@ -188,44 +189,45 @@ const shopStyles = {
   },
   mobileBadge: {
     position: 'absolute' as const,
-    top: '6px',
-    right: '6px',
-    padding: '3px 6px',
+    top: '8px',
+    right: '8px',
+    padding: '4px 8px',
     borderRadius: 'var(--radius-sm)',
-    fontSize: '0.55rem',
-    fontWeight: 500,
+    fontSize: '0.6rem',
+    fontWeight: 600,
   },
   mobileContent: {
-    padding: '10px',
+    padding: '12px',
   },
   mobileCategory: {
-    fontSize: '0.6rem',
+    fontSize: '0.65rem',
     color: 'var(--color-text-muted)',
-    marginBottom: '2px',
+    marginBottom: '4px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
   },
   mobileName: {
-    fontSize: '0.8rem',
+    fontSize: '0.85rem',
     fontWeight: 500,
-    marginBottom: '4px',
-    whiteSpace: 'nowrap' as const,
-    overflow: 'hidden' as const,
-    textOverflow: 'ellipsis',
+    marginBottom: '6px',
+    color: 'var(--color-charcoal)',
+    lineHeight: 1.3,
   },
   mobilePrice: {
-    fontSize: '0.85rem',
+    fontSize: '0.9rem',
     fontWeight: 600,
     color: 'var(--color-cognac)',
-    marginBottom: '8px',
+    marginBottom: '10px',
   },
   mobileAddBtn: {
     width: '100%',
-    padding: '8px',
+    padding: '10px',
     background: 'var(--color-charcoal)',
     color: 'var(--color-white)',
     border: 'none',
-    borderRadius: 'var(--radius-sm)',
+    borderRadius: 'var(--radius-md)',
     cursor: 'pointer',
-    fontSize: '0.7rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
   },
 };
@@ -276,8 +278,8 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
               style={shopStyles.mobileCard}
             >
               <div style={shopStyles.mobileImage}>
-                {product.image ? (
-                  <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                {product.images && product.images[0] ? (
+                  <img src={product.images[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <span style={{ fontSize: '2.5rem' }}>{product.emoji}</span>
                 )}
@@ -342,8 +344,8 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
             onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
           >
             <div style={shopStyles.imageWrap}>
-              {product.image ? (
-                <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              {product.images && product.images[0] ? (
+                <img src={product.images[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <span style={{ fontSize: '5rem' }}>{product.emoji}</span>
               )}
