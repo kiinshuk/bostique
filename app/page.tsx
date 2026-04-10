@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Categories from './components/Categories';
@@ -65,7 +65,9 @@ function setCookie(name, value, days = 30) {
   document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires};path=/;SameSite=Lax`;
 }
 
-export default function Home() {
+function HomeContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState(fallbackProducts);
   const [categories, setCategories] = useState(fallbackCategories);
   const [cart, setCart] = useState([]);
@@ -78,6 +80,17 @@ export default function Home() {
   const [toast, setToast] = useState('');
   const [user, setUser] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('login') === 'true') {
+      setShowUserLogin(true);
+      router.replace('/');
+    }
+    if (searchParams.get('register') === 'true') {
+      setShowUserLogin(true);
+      router.replace('/');
+    }
+  }, [searchParams, router]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -212,7 +225,7 @@ export default function Home() {
         filter={filter} 
         onFilterChange={setFilter}
         onAddToCart={addToCart}
-        onProductClick={openProductModal}
+        onProductClick={(product) => router.push(`/product/${product.id}`)}
         isMobile={isMobile}
       />
       <Featured onAddToCart={addToCart} isMobile={isMobile} />
@@ -257,5 +270,13 @@ export default function Home() {
 
       {toast && <Toast message={toast} />}
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }

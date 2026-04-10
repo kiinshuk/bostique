@@ -168,8 +168,8 @@ const shopStyles = {
   },
   mobileGrid: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '16px',
+    gridTemplateColumns: '1fr',
+    gap: '20px',
   },
   mobileCard: {
     background: 'var(--color-surface)',
@@ -178,50 +178,72 @@ const shopStyles = {
     boxShadow: 'var(--shadow-md)',
     cursor: 'pointer',
     border: '1px solid var(--color-line)',
+    display: 'flex',
+    flexDirection: 'row' as const,
   },
   mobileImage: {
-    height: '140px',
+    width: '120px',
+    height: '120px',
     background: 'var(--color-cream-warm)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative' as const,
+    flexShrink: 0,
   },
   mobileBadge: {
     position: 'absolute' as const,
-    top: '8px',
-    right: '8px',
-    padding: '4px 8px',
+    top: '6px',
+    left: '6px',
+    padding: '3px 6px',
     borderRadius: 'var(--radius-sm)',
-    fontSize: '0.6rem',
+    fontSize: '0.55rem',
     fontWeight: 600,
+    zIndex: 2,
   },
   mobileContent: {
     padding: '12px',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    justifyContent: 'center',
   },
   mobileCategory: {
-    fontSize: '0.65rem',
+    fontSize: '0.6rem',
     color: 'var(--color-text-muted)',
-    marginBottom: '4px',
+    marginBottom: '2px',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
   },
   mobileName: {
-    fontSize: '0.85rem',
-    fontWeight: 500,
-    marginBottom: '6px',
+    fontSize: '0.95rem',
+    fontWeight: 600,
+    marginBottom: '4px',
     color: 'var(--color-charcoal)',
     lineHeight: 1.3,
   },
+  mobileDesc: {
+    fontSize: '0.75rem',
+    color: 'var(--color-text-secondary)',
+    marginBottom: '6px',
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical' as const,
+    overflow: 'hidden',
+  },
+  mobilePriceRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 'auto',
+  },
   mobilePrice: {
-    fontSize: '0.9rem',
-    fontWeight: 600,
+    fontSize: '1rem',
+    fontWeight: 700,
     color: 'var(--color-cognac)',
-    marginBottom: '10px',
   },
   mobileAddBtn: {
-    width: '100%',
-    padding: '10px',
+    padding: '8px 16px',
     background: 'var(--color-charcoal)',
     color: 'var(--color-white)',
     border: 'none',
@@ -295,13 +317,16 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
               <div style={shopStyles.mobileContent}>
                 <p style={shopStyles.mobileCategory}>{product.category}</p>
                 <h3 style={shopStyles.mobileName}>{product.name}</h3>
-                <p style={shopStyles.mobilePrice}>₹{product.price.toLocaleString()}</p>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                  style={shopStyles.mobileAddBtn}
-                >
-                  Add to Bag
-                </button>
+                <p style={shopStyles.mobileDesc}>{product.desc || product.description || ''}</p>
+                <div style={shopStyles.mobilePriceRow}>
+                  <span style={shopStyles.mobilePrice}>₹{product.price.toLocaleString()}</span>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
+                    style={shopStyles.mobileAddBtn}
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
           ))}

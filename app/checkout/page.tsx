@@ -3,7 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const CACHE_KEYS = { cart: 'bostique_cart' };
+const CACHE_KEYS = { cart: 'bostique_cart', user: 'bostique_user' };
+
+function getCookie(name) {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? JSON.parse(decodeURIComponent(match[2])) : null;
+}
 
 export default function Checkout() {
   const router = useRouter();
@@ -12,6 +18,7 @@ export default function Checkout() {
   const [isMobile, setIsMobile] = useState(false);
   const [step, setStep] = useState(1);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [user, setUser] = useState(null);
   
   const [form, setForm] = useState({
     name: '',
@@ -36,6 +43,13 @@ export default function Checkout() {
         setCart(data || []);
       } catch {}
     }
+
+    const cookieUser = getCookie(CACHE_KEYS.user);
+    if (cookieUser) {
+      setUser(cookieUser);
+      setForm(prev => ({ ...prev, name: cookieUser.name || '', email: cookieUser.email || '', phone: cookieUser.phone || '' }));
+    }
+
     setLoading(false);
 
     return () => window.removeEventListener('resize', checkMobile);
@@ -89,6 +103,24 @@ export default function Checkout() {
         <button onClick={() => router.push('/')} style={{ padding: '14px 28px', background: '#333', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
           Continue Shopping
         </button>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', background: '#F4F1EC' }}>
+        <div style={{ textAlign: 'center', maxWidth: '350px' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🔐</div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', marginBottom: '16px' }}>Please Sign In</h2>
+          <p style={{ color: '#666', marginBottom: '30px' }}>You need to be logged in to complete your purchase.</p>
+          <button onClick={() => router.push('/?login=true')} style={{ padding: '14px 28px', background: '#333', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', marginBottom: '12px' }}>
+            Sign In
+          </button>
+          <button onClick={() => router.push('/?register=true')} style={{ display: 'block', width: '100%', padding: '12px', background: 'transparent', color: '#333', border: '1px solid #ddd', borderRadius: '8px', cursor: 'pointer' }}>
+            Create Account
+          </button>
+        </div>
       </div>
     );
   }
