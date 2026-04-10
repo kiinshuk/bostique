@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export default function Nav({ cartCount, onCartClick, onAdminClick, onUserClick, user }) {
+export default function Nav({ cartCount, onCartClick, onUserClick, user }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,6 @@ export default function Nav({ cartCount, onCartClick, onAdminClick, onUserClick,
         <button className="nav-btn" onClick={onUserClick}>
           {user ? `👤 ${user.name}` : '👤 Account'}
         </button>
-        <button className="nav-btn" onClick={onAdminClick}>⚙ Admin</button>
         <button className="cart-pill" onClick={onCartClick}>
           Bag <span className="cart-pill-count">{cartCount}</span>
         </button>

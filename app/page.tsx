@@ -11,8 +11,6 @@ import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
 import ProductModal from './components/ProductModal';
 import CartPanel from './components/CartPanel';
-import AdminLogin from './components/AdminLogin';
-import AdminPanel from './components/AdminPanel';
 import UserLogin from './components/UserLogin';
 import UserAccount from './components/UserAccount';
 import Toast from './components/Toast';
@@ -39,13 +37,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [showCart, setShowCart] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showUserLogin, setShowUserLogin] = useState(false);
   const [showUserAccount, setShowUserAccount] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [toast, setToast] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -105,14 +100,6 @@ export default function Home() {
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  // Admin functions
-  function handleAdminLogin(success) {
-    setShowAdminLogin(!success);
-    setShowAdminPanel(success);
-    setIsAdmin(success);
-  }
-
-  // User functions
   function handleUserLogin(userData) {
     setUser(userData);
     setShowUserLogin(false);
@@ -123,7 +110,6 @@ export default function Home() {
     setShowUserAccount(false);
   }
 
-  // Modal function
   function openProductModal(product) {
     setSelectedProduct(product);
   }
@@ -134,7 +120,6 @@ export default function Home() {
 
   return (
     <div>
-      {/* Loader */}
       {!loading && <div id="loader" className="out"></div>}
       {loading && (
         <div id="loader">
@@ -144,14 +129,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* Cursor */}
-      <div className="cursor-dot" id="cdot"></div>
-      <div className="cursor-ring" id="cring"></div>
-
       <Nav 
         cartCount={cart.reduce((s, i) => s + i.qty, 0)} 
         onCartClick={() => setShowCart(true)}
-        onAdminClick={() => setShowAdminLogin(true)}
         onUserClick={() => user ? setShowUserAccount(true) : setShowUserLogin(true)}
         user={user}
       />
@@ -170,7 +150,6 @@ export default function Home() {
       <Testimonials />
       <Footer />
 
-      {/* Modals and Panels */}
       {showCart && (
         <CartPanel 
           cart={cart} 
@@ -186,24 +165,6 @@ export default function Home() {
           product={selectedProduct}
           onClose={closeProductModal}
           onAddToCart={addToCart}
-        />
-      )}
-
-      {showAdminLogin && (
-        <AdminLogin 
-          onClose={() => setShowAdminLogin(false)}
-          onLogin={handleAdminLogin}
-        />
-      )}
-
-      {showAdminPanel && (
-        <AdminPanel 
-          products={products}
-          categories={categories}
-          onClose={() => {setShowAdminPanel(false); setIsAdmin(false)}}
-          onProductsChange={setProducts}
-          onCategoriesChange={setCategories}
-          showToast={showToast}
         />
       )}
 
