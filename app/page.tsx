@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
@@ -10,10 +10,6 @@ import Featured from './components/Featured';
 import Philosophy from './components/Philosophy';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
-import ProductModal from './components/ProductModal';
-import CartPanel from './components/CartPanel';
-import UserLogin from './components/UserLogin';
-import UserAccount from './components/UserAccount';
 import Toast from './components/Toast';
 
 const fallbackProducts = [
@@ -73,24 +69,9 @@ function HomeContent() {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
-  const [showCart, setShowCart] = useState(false);
-  const [showUserLogin, setShowUserLogin] = useState(false);
-  const [showUserAccount, setShowUserAccount] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [toast, setToast] = useState('');
   const [user, setUser] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    if (searchParams.get('login') === 'true') {
-      setShowUserLogin(true);
-      router.replace('/');
-    }
-    if (searchParams.get('register') === 'true') {
-      setShowUserLogin(true);
-      router.replace('/');
-    }
-  }, [searchParams, router]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -165,40 +146,6 @@ function HomeContent() {
     showToast(isMobile ? '✓ Added!' : '✓ Added to bag');
   }
 
-  const updateCartQty = useCallback((id, delta) => {
-    setCart(prev => prev.map(item => 
-      item.id === id ? {...item, qty: Math.max(1, item.qty + delta)} : item
-    ).filter(item => item.qty > 0));
-  }, []);
-
-  const removeFromCart = useCallback((id) => {
-    setCart(prev => prev.filter(item => item.id !== id));
-  }, []);
-
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-  function handleUserLogin(userData) {
-    setUser(userData);
-    setCookie(CACHE_KEYS.user, userData);
-    setShowUserLogin(false);
-    showToast('✓ Welcome back!');
-  }
-
-  function handleUserLogout() {
-    setUser(null);
-    setCookie(CACHE_KEYS.user, '', -1);
-    setShowUserAccount(false);
-    showToast('✓ Signed out');
-  }
-
-  function openProductModal(product) {
-    setSelectedProduct(product);
-  }
-
-  function closeProductModal() {
-    setSelectedProduct(null);
-  }
-
   return (
     <div>
       {!loading && <div id="loader" className="out"></div>}
@@ -212,8 +159,6 @@ function HomeContent() {
 
       <Nav 
         cartCount={cart.reduce((s, i) => s + i.qty, 0)} 
-        onCartClick={() => setShowCart(true)}
-        onUserClick={() => user ? setShowUserAccount(true) : setShowUserLogin(true)}
         user={user}
         isMobile={isMobile}
       />
@@ -232,41 +177,6 @@ function HomeContent() {
       <Philosophy isMobile={isMobile} />
       <Testimonials isMobile={isMobile} />
       <Footer isMobile={isMobile} />
-
-      {showCart && (
-        <CartPanel 
-          cart={cart} 
-          total={cartTotal}
-          onClose={() => setShowCart(false)}
-          onUpdateQty={updateCartQty}
-          onRemove={removeFromCart}
-          isMobile={isMobile}
-        />
-      )}
-
-      {selectedProduct && (
-        <ProductModal 
-          product={selectedProduct}
-          onClose={closeProductModal}
-          onAddToCart={addToCart}
-        />
-      )}
-
-      {showUserLogin && (
-        <UserLogin 
-          onClose={() => setShowUserLogin(false)}
-          onLogin={handleUserLogin}
-          showToast={showToast}
-        />
-      )}
-
-      {showUserAccount && user && (
-        <UserAccount 
-          user={user}
-          onClose={() => setShowUserAccount(false)}
-          onLogout={handleUserLogout}
-        />
-      )}
 
       {toast && <Toast message={toast} />}
     </div>

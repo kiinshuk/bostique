@@ -140,7 +140,7 @@ export default function ProductPage() {
         <header style={{ background: 'var(--color-charcoal)', color: 'white', padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
           <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer' }}>←</button>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', letterSpacing: '0.1em' }}>BOSTIQUE</span>
-          <button onClick={() => router.push('/?cart=true')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
+          <button onClick={() => router.push('/cart')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
             🛒
             {cartCount > 0 && (
               <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-cognac)', color: 'white', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -250,7 +250,7 @@ export default function ProductPage() {
             ← Back
           </button>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', letterSpacing: '0.1em' }}>BOSTIQUE</span>
-          <button onClick={() => router.push('/?cart=true')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
+          <button onClick={() => router.push('/cart')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
             🛒
             {cartCount > 0 && (
               <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-cognac)', color: 'white', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

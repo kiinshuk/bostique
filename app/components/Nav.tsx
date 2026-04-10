@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const navStyles: Record<string, React.CSSProperties> = {
   nav: {
@@ -162,7 +163,8 @@ const navStyles: Record<string, React.CSSProperties> = {
   },
 };
 
-export default function Nav({ cartCount, onCartClick, onUserClick, user, isMobile }) {
+export default function Nav({ cartCount, user, isMobile }) {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -172,12 +174,24 @@ export default function Nav({ cartCount, onCartClick, onUserClick, user, isMobil
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  function handleCartClick() {
+    router.push('/cart');
+  }
+
+  function handleUserClick() {
+    if (user) {
+      router.push('/account');
+    } else {
+      router.push('/signin');
+    }
+  }
+
   if (isMobile) {
     return (
       <nav style={navStyles.mobileNav}>
         <a href="#" style={navStyles.mobileLogo}>BOSTIQUE</a>
         <div style={navStyles.mobileActions}>
-          <button onClick={onCartClick} style={navStyles.cartBtn}>
+          <button onClick={handleCartClick} style={navStyles.cartBtn}>
             🛒
             {cartCount > 0 && <span style={navStyles.cartBadge}>{cartCount}</span>}
           </button>
@@ -187,7 +201,7 @@ export default function Nav({ cartCount, onCartClick, onUserClick, user, isMobil
           <div style={navStyles.mobileMenu}>
             <a href="#shop" onClick={() => setMenuOpen(false)} style={navStyles.menuLink}>Shop</a>
             <a href="#philosophy" onClick={() => setMenuOpen(false)} style={navStyles.menuLink}>About</a>
-            <button onClick={() => { setMenuOpen(false); onUserClick(); }} style={navStyles.menuBtnItem}>
+            <button onClick={() => { setMenuOpen(false); handleUserClick(); }} style={navStyles.menuBtnItem}>
               {user ? `👤 ${user.name}` : '👤 Account'}
             </button>
           </div>
@@ -198,16 +212,16 @@ export default function Nav({ cartCount, onCartClick, onUserClick, user, isMobil
 
   return (
     <nav style={{...navStyles.nav, ...(scrolled ? navStyles.navScrolled : {})}}>
-      <a href="#" style={navStyles.logo}>BOSTIQUE</a>
+      <a href="/" style={navStyles.logo}>BOSTIQUE</a>
       <ul style={navStyles.links}>
         <li><a href="#shop" style={navStyles.link}>Shop</a></li>
         <li><a href="#philosophy" style={navStyles.link}>About</a></li>
       </ul>
       <div style={navStyles.actions}>
-        <button onClick={onUserClick} style={navStyles.accountBtn}>
+        <button onClick={handleUserClick} style={navStyles.accountBtn}>
           {user ? `👤 ${user.name}` : '👤 Account'}
         </button>
-        <button onClick={onCartClick} style={navStyles.cartPill}>
+        <button onClick={handleCartClick} style={navStyles.cartPill}>
           Bag <span style={navStyles.count}>{cartCount}</span>
         </button>
       </div>
