@@ -1,5 +1,245 @@
 'use client';
 
+const shopStyles = {
+  section: {
+    padding: '80px 80px',
+    background: 'var(--color-surface)',
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '48px',
+    flexWrap: 'wrap' as const,
+    gap: '24px',
+  },
+  headerLeft: {},
+  eyebrow: {
+    fontSize: '0.7rem',
+    letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+    color: 'var(--color-text-muted)',
+    marginBottom: '8px',
+  },
+  h2: {
+    fontFamily: 'var(--font-display)',
+    fontSize: 'clamp(2rem, 3.5vw, 2.8rem)',
+    fontWeight: 300,
+    color: 'var(--color-charcoal)',
+  },
+  highlight: {
+    fontStyle: 'italic',
+    color: 'var(--color-cognac)',
+  },
+  filterRow: {
+    display: 'flex',
+    gap: '8px',
+    flexWrap: 'wrap' as const,
+  },
+  filterBtn: {
+    padding: '10px 20px',
+    border: '1px solid var(--color-border)',
+    background: 'transparent',
+    color: 'var(--color-text-primary)',
+    borderRadius: 'var(--radius-sm)',
+    cursor: 'pointer',
+    fontSize: '0.85rem',
+    transition: 'all var(--transition-fast)',
+  },
+  filterBtnActive: {
+    background: 'var(--color-gold)',
+    color: 'var(--color-white)',
+    borderColor: 'var(--color-gold)',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '30px',
+  },
+  card: {
+    background: 'var(--color-surface)',
+    borderRadius: 'var(--radius-lg)',
+    overflow: 'hidden',
+    boxShadow: 'var(--shadow-md)',
+    cursor: 'pointer',
+    transition: 'transform var(--transition-base), box-shadow var(--transition-base)',
+  },
+  imageWrap: {
+    height: '220px',
+    background: 'var(--color-cream-warm)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative' as const,
+  },
+  badge: {
+    position: 'absolute' as const,
+    top: '12px',
+    right: '12px',
+    padding: '6px 12px',
+    borderRadius: 'var(--radius-sm)',
+    fontSize: '0.7rem',
+    fontWeight: 500,
+    letterSpacing: '0.05em',
+  },
+  content: {
+    padding: '20px',
+  },
+  category: {
+    fontSize: '0.7rem',
+    color: 'var(--color-text-muted)',
+    marginBottom: '4px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+  },
+  name: {
+    fontSize: '1.1rem',
+    fontWeight: 500,
+    marginBottom: '8px',
+    color: 'var(--color-charcoal)',
+  },
+  price: {
+    fontSize: '1rem',
+    fontWeight: 600,
+    color: 'var(--color-cognac)',
+    marginBottom: '16px',
+  },
+  actions: {
+    display: 'flex',
+    gap: '12px',
+  },
+  addBtn: {
+    flex: 1,
+    padding: '12px',
+    background: 'var(--color-charcoal)',
+    color: 'var(--color-white)',
+    border: 'none',
+    borderRadius: 'var(--radius-md)',
+    cursor: 'pointer',
+    fontSize: '0.85rem',
+    fontWeight: 500,
+    transition: 'background var(--transition-fast)',
+  },
+  viewBtn: {
+    padding: '12px 16px',
+    background: 'transparent',
+    color: 'var(--color-charcoal)',
+    border: '1px solid var(--color-border)',
+    borderRadius: 'var(--radius-md)',
+    cursor: 'pointer',
+    transition: 'border-color var(--transition-fast)',
+  },
+  mobileSection: {
+    padding: '40px 20px',
+    background: 'var(--color-surface)',
+  },
+  mobileHeader: {
+    marginBottom: '20px',
+  },
+  mobileEyebrow: {
+    fontSize: '0.65rem',
+    letterSpacing: '0.15em',
+    textTransform: 'uppercase',
+    color: 'var(--color-text-muted)',
+    marginBottom: '5px',
+  },
+  mobileH2: {
+    fontFamily: 'var(--font-display)',
+    fontSize: '1.5rem',
+    fontWeight: 300,
+  },
+  mobileFilters: {
+    display: 'flex',
+    gap: '8px',
+    overflowX: 'auto' as React.CSSProperties['overflowX'],
+    paddingBottom: '15px',
+    marginBottom: '20px',
+    scrollbarWidth: 'none' as React.CSSProperties['scrollbarWidth'],
+  },
+  mobileFilter: {
+    padding: '8px 16px',
+    border: '1px solid var(--color-border)',
+    background: 'var(--color-surface)',
+    color: 'var(--color-text-primary)',
+    borderRadius: 'var(--radius-full)',
+    cursor: 'pointer',
+    fontSize: '0.75rem',
+    whiteSpace: 'nowrap' as const,
+  },
+  mobileGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '12px',
+  },
+  mobileCard: {
+    background: 'var(--color-surface)',
+    borderRadius: 'var(--radius-lg)',
+    overflow: 'hidden',
+    boxShadow: 'var(--shadow-md)',
+    cursor: 'pointer',
+  },
+  mobileImage: {
+    height: '120px',
+    background: 'var(--color-cream-warm)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative' as const,
+  },
+  mobileBadge: {
+    position: 'absolute' as const,
+    top: '6px',
+    right: '6px',
+    padding: '3px 6px',
+    borderRadius: 'var(--radius-sm)',
+    fontSize: '0.55rem',
+    fontWeight: 500,
+  },
+  mobileContent: {
+    padding: '10px',
+  },
+  mobileCategory: {
+    fontSize: '0.6rem',
+    color: 'var(--color-text-muted)',
+    marginBottom: '2px',
+  },
+  mobileName: {
+    fontSize: '0.8rem',
+    fontWeight: 500,
+    marginBottom: '4px',
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis',
+  },
+  mobilePrice: {
+    fontSize: '0.85rem',
+    fontWeight: 600,
+    color: 'var(--color-cognac)',
+    marginBottom: '8px',
+  },
+  mobileAddBtn: {
+    width: '100%',
+    padding: '8px',
+    background: 'var(--color-charcoal)',
+    color: 'var(--color-white)',
+    border: 'none',
+    borderRadius: 'var(--radius-sm)',
+    cursor: 'pointer',
+    fontSize: '0.7rem',
+    fontWeight: 500,
+  },
+};
+
+const filterLabels: Record<string, string> = {
+  'All': 'All',
+  'Duffel Bag': 'Duffel',
+  'Carry Bag': 'Carry',
+  'Backpack': 'Backpack',
+  'Cushion Cover': 'Cushion',
+};
+
+const filters = ['All', 'Duffel Bag', 'Carry Bag', 'Backpack', 'Cushion Cover'];
+
 export default function Shop({ products, filter, onFilterChange, onAddToCart, onProductClick, isMobile }) {
   const filteredProducts = filter === 'All' 
     ? products 
@@ -7,42 +247,35 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
 
   if (isMobile) {
     return (
-      <section style={{ padding: '40px 20px', background: '#FAFAF8' }}>
-        <div style={{ marginBottom: '20px' }}>
-          <p style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#6B6560', marginBottom: '5px' }}>The Collection</p>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 300 }}>Shop <em style={{ fontStyle: 'italic', color: '#B05C2A' }}>Bostique</em></h2>
+      <section style={shopStyles.mobileSection}>
+        <div style={shopStyles.mobileHeader}>
+          <p style={shopStyles.mobileEyebrow}>THE COLLECTION</p>
+          <h2 style={shopStyles.mobileH2}>
+            Shop <em style={shopStyles.highlight}>Bostique</em>
+          </h2>
         </div>
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '15px', marginBottom: '20px' }}>
-          {['All', 'Duffel Bag', 'Carry Bag', 'Backpack', 'Cushion Cover'].map(f => (
+        <div style={shopStyles.mobileFilters}>
+          {filters.map(f => (
             <button 
               key={f} 
               onClick={() => onFilterChange(f)}
-              style={{ 
-                padding: '8px 16px', 
-                border: filter === f ? '1px solid #C8A97A' : '1px solid #ddd',
-                background: filter === f ? '#C8A97A' : 'white',
-                color: filter === f ? 'white' : '#333',
-                borderRadius: '20px',
-                cursor: 'pointer',
-                fontSize: '0.75rem',
-                whiteSpace: 'nowrap'
+              style={{
+                ...shopStyles.mobileFilter,
+                ...(filter === f ? shopStyles.filterBtnActive : {}),
               }}
             >
-              {f === 'All' ? 'All' : f === 'Duffel Bag' ? 'Duffel' : f === 'Carry Bag' ? 'Carry' : f === 'Cushion Cover' ? 'Cushion' : f}
+              {filterLabels[f]}
             </button>
           ))}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        <div style={shopStyles.mobileGrid}>
           {filteredProducts.map(product => (
             <div 
               key={product.id} 
               onClick={() => onProductClick(product)}
-              style={{ 
-                background: 'white', borderRadius: '10px', overflow: 'hidden',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
-              }}
+              style={shopStyles.mobileCard}
             >
-              <div style={{ height: '120px', background: '#F4F1EC', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+              <div style={shopStyles.mobileImage}>
                 {product.image ? (
                   <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
@@ -50,25 +283,20 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
                 )}
                 {product.badge && (
                   <span style={{ 
-                    position: 'absolute', top: '6px', right: '6px', 
-                    background: product.badge === 'Sale' ? '#C0392B' : '#27AE60',
-                    color: 'white', padding: '3px 6px', borderRadius: '4px',
-                    fontSize: '0.55rem', fontWeight: 500
+                    ...shopStyles.mobileBadge,
+                    background: product.badge === 'Sale' ? 'var(--color-error)' : 'var(--color-success)',
                   }}>
                     {product.badge}
                   </span>
                 )}
               </div>
-              <div style={{ padding: '10px' }}>
-                <p style={{ fontSize: '0.6rem', color: '#6B6560', marginBottom: '2px' }}>{product.category}</p>
-                <h3 style={{ fontSize: '0.8rem', fontWeight: 500, marginBottom: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</h3>
-                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#B05C2A', marginBottom: '8px' }}>₹{product.price.toLocaleString()}</p>
+              <div style={shopStyles.mobileContent}>
+                <p style={shopStyles.mobileCategory}>{product.category}</p>
+                <h3 style={shopStyles.mobileName}>{product.name}</h3>
+                <p style={shopStyles.mobilePrice}>₹{product.price.toLocaleString()}</p>
                 <button 
                   onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                  style={{ 
-                    width: '100%', padding: '8px', background: '#0D0D0B', color: 'white', 
-                    border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem'
-                  }}
+                  style={shopStyles.mobileAddBtn}
                 >
                   Add to Bag
                 </button>
@@ -81,50 +309,39 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
   }
 
   return (
-    <section id="shop" style={{ padding: '80px 5%', background: '#FAFAF8' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
-        <div>
-          <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6B6560', marginBottom: '8px' }}>The Collection</p>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem,3.5vw,2.8rem)', fontWeight: 300 }}>
-            Shop All <em style={{ fontStyle: 'italic', color: '#B05C2A' }}>Bostique</em>
+    <section id="shop" style={shopStyles.section}>
+      <div style={shopStyles.header}>
+        <div style={shopStyles.headerLeft}>
+          <p style={shopStyles.eyebrow}>THE COLLECTION</p>
+          <h2 style={shopStyles.h2}>
+            Shop All <em style={shopStyles.highlight}>Bostique</em>
           </h2>
         </div>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {['All', 'Duffel Bag', 'Carry Bag', 'Backpack', 'Cushion Cover'].map(f => (
+        <div style={shopStyles.filterRow}>
+          {filters.map(f => (
             <button 
               key={f} 
               onClick={() => onFilterChange(f)}
-              style={{ 
-                padding: '10px 20px', 
-                border: filter === f ? '1px solid #C8A97A' : '1px solid #ddd',
-                background: filter === f ? '#C8A97A' : 'transparent',
-                color: filter === f ? 'white' : '#333',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '0.85rem',
-                transition: 'all 0.2s'
+              style={{
+                ...shopStyles.filterBtn,
+                ...(filter === f ? shopStyles.filterBtnActive : {}),
               }}
             >
-              {f === 'All' ? 'All' : f === 'Duffel Bag' ? 'Duffel' : f === 'Carry Bag' ? 'Carry' : f === 'Cushion Cover' ? 'Cushion' : f}
+              {filterLabels[f]}
             </button>
           ))}
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px' }}>
+      <div style={shopStyles.grid}>
         {filteredProducts.map(product => (
           <div 
             key={product.id} 
             onClick={() => onProductClick(product)}
-            style={{ 
-              background: 'white', borderRadius: '12px', overflow: 'hidden',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)'; }}
+            style={shopStyles.card}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
           >
-            <div style={{ height: '220px', background: '#F4F1EC', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+            <div style={shopStyles.imageWrap}>
               {product.image ? (
                 <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
@@ -132,35 +349,31 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
               )}
               {product.badge && (
                 <span style={{ 
-                  position: 'absolute', top: '12px', right: '12px', 
-                  background: product.badge === 'Sale' ? '#C0392B' : '#27AE60',
-                  color: 'white', padding: '6px 12px', borderRadius: '4px',
-                  fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.05em'
+                  ...shopStyles.badge,
+                  background: product.badge === 'Sale' ? 'var(--color-error)' : 'var(--color-success)',
                 }}>
                   {product.badge}
                 </span>
               )}
             </div>
-            <div style={{ padding: '20px' }}>
-              <p style={{ fontSize: '0.7rem', color: '#6B6560', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{product.category}</p>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '8px', color: '#1C1C1A' }}>{product.name}</h3>
-              <p style={{ fontSize: '1rem', fontWeight: 600, color: '#B05C2A', marginBottom: '12px' }}>₹{product.price.toLocaleString()}</p>
-              <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={shopStyles.content}>
+              <p style={shopStyles.category}>{product.category}</p>
+              <h3 style={shopStyles.name}>{product.name}</h3>
+              <p style={shopStyles.price}>₹{product.price.toLocaleString()}</p>
+              <div style={shopStyles.actions}>
                 <button 
                   onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                  style={{ 
-                    flex: 1, padding: '12px', background: '#0D0D0B', color: 'white', 
-                    border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem'
-                  }}
+                  style={shopStyles.addBtn}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-cognac)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'var(--color-charcoal)'}
                 >
                   Add to Bag
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onProductClick(product); }}
-                  style={{ 
-                    padding: '12px 16px', background: 'transparent', color: '#0D0D0B',
-                    border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer'
-                  }}
+                  style={shopStyles.viewBtn}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-cognac)'}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
                 >
                   View
                 </button>
