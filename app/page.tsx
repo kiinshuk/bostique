@@ -77,19 +77,23 @@ function HomeContent() {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
-  useEffect(() => {
     const cachedProducts = getCache(CACHE_KEYS.products);
     const cachedCategories = getCache(CACHE_KEYS.categories);
     const cachedCart = getCache(CACHE_KEYS.cart);
-    const cookieUser = getCookie(CACHE_KEYS.user);
+    const storedUser = localStorage.getItem('bostique_user_local');
     
     if (cachedProducts) setProducts(cachedProducts);
     if (cachedCategories) setCategories(cachedCategories);
     if (cachedCart) setCart(cachedCart);
-    if (cookieUser) setUser(cookieUser);
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {}
+    } else {
+      const cookieUser = getCookie(CACHE_KEYS.user);
+      if (cookieUser) setUser(cookieUser);
+    }
     
     loadData();
   }, []);

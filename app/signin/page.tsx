@@ -46,6 +46,7 @@ export default function SignIn() {
 
       if (res.ok && data.user) {
         setCookie(CACHE_KEYS.user, data.user);
+        localStorage.setItem('bostique_user_local', JSON.stringify(data.user));
         router.push('/');
       } else {
         setError(data.error || 'Invalid credentials');

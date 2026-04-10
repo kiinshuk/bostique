@@ -45,6 +45,7 @@ export default function SignUp() {
 
       if (res.ok && data.user) {
         setCookie('bostique_user', data.user);
+        localStorage.setItem('bostique_user_local', JSON.stringify(data.user));
         setSuccess(true);
         setTimeout(() => router.push('/'), 2000);
       } else {

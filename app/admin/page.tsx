@@ -107,7 +107,7 @@ export default function Dashboard() {
 
     const reader = new FileReader();
     reader.onload = async (event) => {
-      const base64 = event.target.result;
+      const base64 = String(event.target.result);
       const updatedProducts = products.map(p => {
         if (p.id === selectedProduct.id) {
           const newImages = [...(p.images || [''])];
@@ -373,35 +373,45 @@ export default function Dashboard() {
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', marginBottom: '10px', fontSize: '14px', fontWeight: '500' }}>Product Images (up to 4)</label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '10px' }}>
+                  <label style={{ display: 'block', marginBottom: '10px', fontSize: '14px', fontWeight: '500' }}>Product Images (up to 4) - Click image to upload</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '15px' }}>
                     {prodForm.images.map((img, idx) => (
                       <div key={idx} style={{ position: 'relative', aspectRatio: '1', background: '#f5f5f5', borderRadius: '6px', overflow: 'hidden', border: '1px solid #ddd' }}>
                         {img ? (
                           <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999' }}>{idx + 1}</div>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999', fontSize: '12px' }}>{idx + 1}</div>
                         )}
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                    {prodForm.images.map((img, idx) => (
-                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                         <input 
-                          type="text" 
-                          value={img} 
+                          type="file" 
+                          accept="image/*"
+                          id={`img-upload-${idx}`}
+                          style={{ display: 'none' }}
                           onChange={(e) => {
-                            const newImages = [...prodForm.images];
-                            newImages[idx] = e.target.value;
-                            setProdForm({...prodForm, images: newImages});
+                            const file = e.target.files[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                const newImages = [...prodForm.images];
+                                newImages[idx] = String(event.target.result);
+                                setProdForm({...prodForm, images: newImages});
+                              };
+                              reader.readAsDataURL(file);
+                            }
                           }}
-                          placeholder={`Image ${idx + 1} URL`}
-                          style={{ width: '200px', padding: '8px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '12px' }}
                         />
+                        <label 
+                          htmlFor={`img-upload-${idx}`}
+                          style={{ position: 'absolute', inset: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)', color: 'white', opacity: 0, transition: 'opacity 0.2s' }}
+                        onMouseEnter={function() { this.style.opacity = '1'; }}
+                        onMouseLeave={function() { this.style.opacity = '0'; }}
+                        >
+                          📷 Upload
+                        </label>
                       </div>
                     ))}
                   </div>
+                  <p style={{ fontSize: '12px', color: '#666' }}>Tip: Click on each image box to upload from your device</p>
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
@@ -513,15 +523,48 @@ export default function Dashboard() {
       {showImageModal && selectedProduct && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }} onClick={() => setShowImageModal(false)}>
           <div style={{ background: 'white', padding: '30px', borderRadius: '8px', maxWidth: '500px', width: '90%' }} onClick={e => e.stopPropagation()}>
-            <h3 style={{ marginBottom: '15px' }}>Manage Images for {selectedProduct.name}</h3>
+            <h3 style={{ marginBottom: '15px' }}>Manage Images - Click to Upload</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
               {(selectedProduct.images || ['']).map((img, idx) => (
-                <div key={idx} style={{ position: 'relative', aspectRatio: '1', background: '#f5f5f5', borderRadius: '6px', overflow: 'hidden', border: selectedImageIndex === idx ? '2px solid #007bff' : '1px solid #ddd' }} onClick={() => setSelectedImageIndex(idx)}>
+                <div key={idx} style={{ position: 'relative', aspectRatio: '1', background: '#f5f5f5', borderRadius: '6px', overflow: 'hidden', border: selectedImageIndex === idx ? '2px solid #007bff' : '1px solid #ddd' }}>
                   {img ? (
                     <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999', fontSize: '12px' }}>Empty</div>
                   )}
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    id={`modal-img-upload-${idx}`}
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          const updatedProducts = products.map(p => {
+                            if (p.id === selectedProduct.id) {
+                              const newImages = [...(p.images || [''])];
+                              newImages[idx] = String(event.target.result);
+                              return { ...p, images: newImages };
+                            }
+                            return p;
+                          });
+                          setProducts(updatedProducts);
+                          setSelectedProduct({ ...selectedProduct, images: updatedProducts.find(p => p.id === selectedProduct.id)?.images });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  <label 
+                    htmlFor={`modal-img-upload-${idx}`}
+                    style={{ position: 'absolute', inset: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', color: 'white', opacity: 0, transition: 'opacity 0.2s' }}
+                    onMouseEnter={function() { this.style.opacity = '1'; }}
+                    onMouseLeave={function() { this.style.opacity = '0'; }}
+                  >
+                    📷
+                  </label>
                   {(selectedProduct.images || []).length > 1 && (
                     <button 
                       onClick={(e) => { e.stopPropagation(); removeImage(idx); }}
@@ -541,33 +584,13 @@ export default function Dashboard() {
                 </button>
               )}
             </div>
-            <p style={{ fontSize: '12px', color: '#666', marginBottom: '15px' }}>Click on an image to select it for upload</p>
-            <input 
-              type="file" 
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-              style={{ display: 'none' }}
-            />
+            <p style={{ fontSize: '12px', color: '#666', marginBottom: '15px' }}>Click on each image box to upload from your device</p>
             <button 
-              onClick={() => fileInputRef.current?.click()}
-              style={{ width: '100%', padding: '12px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginBottom: '10px' }}
+              onClick={() => setShowImageModal(false)}
+              style={{ width: '100%', padding: '12px', background: '#333', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
             >
-              Upload Image for Slot {selectedImageIndex + 1}
+              Done
             </button>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              {selectedProduct.images?.[selectedImageIndex] && (
-                <div style={{ flex: 1, padding: '10px', background: '#f5f5f5', borderRadius: '4px', fontSize: '12px', color: '#666' }}>
-                  Current: Image {selectedImageIndex + 1}
-                </div>
-              )}
-              <button 
-                onClick={() => setShowImageModal(false)}
-                style={{ padding: '12px 24px', background: 'transparent', color: '#666', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer' }}
-              >
-                Close
-              </button>
-            </div>
           </div>
         </div>
       )}
