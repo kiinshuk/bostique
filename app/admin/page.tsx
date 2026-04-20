@@ -205,15 +205,44 @@ export default function Dashboard() {
   }
 
   async function deleteProduct(id) {
-    if (confirm('Delete this product?')) {
-      setProducts(products.filter(p => p.id !== id));
-      showToast('Product deleted');
+    if (!confirm('Delete this product?')) return;
+    
+    try {
+      const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      
+      if (result.success) {
+        showToast('Product deleted');
+        loadData();
+      } else {
+        showToast('Error: ' + (result.error || 'Failed'));
+      }
+    } catch (e) {
+      showToast('Error deleting product');
+    }
+  }
+
+  async function deleteCategory(id) {
+    if (!confirm('Delete this category?')) return;
+    
+    try {
+      const res = await fetch(`/api/categories?id=${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      
+      if (result.success) {
+        showToast('Category deleted');
+        loadData();
+      } else {
+        showToast('Error: ' + (result.error || 'Failed'));
+      }
+    } catch (e) {
+      showToast('Error deleting category');
     }
   }
 
   async function addCategory() {
     if (!catForm.name) return;
-    const newCat = { id: Date.now(), name: catForm.name, icon: catForm.icon || '📦' };
+    const newCat = { name: catForm.name, icon: catForm.icon || '📦' };
     
     try {
       const res = await fetch('/api/categories', {
@@ -226,6 +255,8 @@ export default function Dashboard() {
       if (result.success) {
         showToast('Category added');
         loadData();
+      } else {
+        showToast('Error: ' + (result.error || 'Failed'));
       }
     } catch (e) {
       showToast('Error adding category');
@@ -488,7 +519,7 @@ export default function Dashboard() {
               <div style={{ background: 'white', borderRadius: '8px', marginBottom: '20px', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead style={{ background: '#f5f5f5' }}>
-                    <tr><th style={{ padding: '12px', textAlign: 'left' }}>Icon</th><th style={{ padding: '12px', textAlign: 'left' }}>Category</th><th style={{ padding: '12px', textAlign: 'left' }}>Products</th></tr>
+                    <tr><th style={{ padding: '12px', textAlign: 'left' }}>Icon</th><th style={{ padding: '12px', textAlign: 'left' }}>Category</th><th style={{ padding: '12px', textAlign: 'left' }}>Products</th><th style={{ padding: '12px', textAlign: 'left' }}>Action</th></tr>
                   </thead>
                   <tbody>
                     {categories.map(c => (
@@ -496,6 +527,7 @@ export default function Dashboard() {
                         <td style={{ padding: '12px', fontSize: '24px' }}>{c.icon}</td>
                         <td style={{ padding: '12px' }}>{c.name}</td>
                         <td style={{ padding: '12px' }}>{products.filter(p => p.category_id === c.id).length}</td>
+                        <td style={{ padding: '12px' }}><button onClick={() => deleteCategory(c.id)} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Delete</button></td>
                       </tr>
                     ))}
                   </tbody>

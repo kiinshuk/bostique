@@ -41,3 +41,23 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ success: true, id: data[0]?.id });
 }
+
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = parseInt(searchParams.get('id'));
+
+  if (!id) {
+    return NextResponse.json({ success: false, error: 'Missing id' }, { status: 400 });
+  }
+
+  const { error } = await supabase
+    .from('categories')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
+}
