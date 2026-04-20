@@ -2,9 +2,9 @@
 
 const footerStyles = {
   footer: {
-    background: 'var(--color-charcoal)',
+    background: 'var(--color-black)',
     color: 'var(--color-white)',
-    padding: '80px 80px 40px',
+    padding: '80px 48px 40px',
   },
   top: {
     display: 'grid',
@@ -15,20 +15,21 @@ const footerStyles = {
   brandCol: {},
   brandName: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.75rem',
-    letterSpacing: '0.2em',
+    fontSize: '1.5rem',
+    fontWeight: 400,
     marginBottom: '8px',
+    letterSpacing: '0.1em',
   },
   tagline: {
-    fontSize: '0.875rem',
-    color: 'rgba(255, 255, 255, 0.6)',
-    marginBottom: '20px',
+    fontSize: '0.85rem',
+    color: 'rgba(255,255,255,0.5)',
+    marginBottom: '16px',
   },
   brandBody: {
-    fontSize: '0.875rem',
-    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: '0.85rem',
+    color: 'rgba(255,255,255,0.6)',
     lineHeight: 1.6,
-    maxWidth: '300px',
+    maxWidth: '280px',
     marginBottom: '24px',
   },
   socials: {
@@ -38,22 +39,22 @@ const footerStyles = {
   socLink: {
     width: '40px',
     height: '40px',
-    background: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: '50%',
+    border: '1px solid rgba(255,255,255,0.2)',
+    borderRadius: '0',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '1.1rem',
+    fontSize: '1rem',
     color: 'var(--color-white)',
     textDecoration: 'none',
-    transition: 'background var(--transition-fast)',
+    transition: 'border-color 0.2s',
   },
   col: {},
   colTitle: {
     fontSize: '0.7rem',
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: 'rgba(255,255,255,0.5)',
     marginBottom: '20px',
     fontWeight: 500,
   },
@@ -66,19 +67,19 @@ const footerStyles = {
     gap: '12px',
   },
   colLink: {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255,255,255,0.8)',
     fontSize: '0.9rem',
     textDecoration: 'none',
-    transition: 'color var(--transition-fast)',
+    transition: 'opacity 0.2s',
   },
   bottom: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: '32px',
-    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+    borderTop: '1px solid rgba(255,255,255,0.1)',
     fontSize: '0.8rem',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: 'rgba(255,255,255,0.4)',
   },
   waFloat: {
     position: 'fixed' as React.CSSProperties['position'],
@@ -87,33 +88,18 @@ const footerStyles = {
     width: '56px',
     height: '56px',
     background: '#25D366',
-    borderRadius: '50%',
+    borderRadius: '0',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '1.5rem',
-    boxShadow: 'var(--shadow-xl)',
+    boxShadow: 'var(--shadow-lg)',
     zIndex: 998,
-    transition: 'transform var(--transition-base)',
     textDecoration: 'none',
   },
-  waTooltip: {
-    position: 'absolute' as const,
-    bottom: 'calc(100% + 8px)',
-    right: 0,
-    background: 'var(--color-charcoal)',
-    color: 'var(--color-white)',
-    padding: '8px 12px',
-    borderRadius: 'var(--radius-sm)',
-    fontSize: '0.75rem',
-    whiteSpace: 'nowrap' as const,
-    opacity: 0,
-    visibility: 'hidden' as const,
-    transition: 'all var(--transition-fast)',
-  },
   mobileFooter: {
-    padding: '40px 20px',
-    background: 'var(--color-charcoal)',
+    padding: '48px 20px 32px',
+    background: 'var(--color-black)',
     color: 'var(--color-white)',
   },
   mobileBrand: {
@@ -122,13 +108,13 @@ const footerStyles = {
   },
   mobileBrandName: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.3rem',
-    letterSpacing: '0.15em',
-    marginBottom: '8px',
+    fontSize: '1.25rem',
+    fontWeight: 400,
+    marginBottom: '4px',
   },
   mobileTagline: {
     fontSize: '0.8rem',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: 'rgba(255,255,255,0.5)',
   },
   mobileLinks: {
     display: 'grid',
@@ -140,8 +126,9 @@ const footerStyles = {
   mobileColTitle: {
     fontSize: '0.7rem',
     letterSpacing: '0.15em',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: 'rgba(255,255,255,0.5)',
     marginBottom: '12px',
+    textTransform: 'uppercase',
   },
   mobileColList: {
     listStyle: 'none',
@@ -152,7 +139,7 @@ const footerStyles = {
     gap: '10px',
   },
   mobileColLink: {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255,255,255,0.8)',
     fontSize: '0.85rem',
   },
   mobileSocials: {
@@ -163,13 +150,13 @@ const footerStyles = {
   },
   mobileSocialLink: {
     color: 'var(--color-white)',
-    fontSize: '1.5rem',
+    fontSize: '1.25rem',
     textDecoration: 'none',
   },
   mobileCopy: {
     textAlign: 'center' as const,
     fontSize: '0.75rem',
-    color: 'rgba(255, 255, 255, 0.4)',
+    color: 'rgba(255,255,255,0.4)',
   },
   mobileWaBtn: {
     position: 'fixed' as React.CSSProperties['position'],
@@ -178,12 +165,12 @@ const footerStyles = {
     width: '50px',
     height: '50px',
     background: '#25D366',
-    borderRadius: '50%',
+    borderRadius: '0',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '1.5rem',
-    boxShadow: 'var(--shadow-xl)',
+    fontSize: '1.25rem',
+    boxShadow: 'var(--shadow-lg)',
     zIndex: 998,
     textDecoration: 'none',
   },
@@ -195,11 +182,11 @@ export default function Footer({ isMobile }) {
       <footer style={footerStyles.mobileFooter}>
         <div style={footerStyles.mobileBrand}>
           <h3 style={footerStyles.mobileBrandName}>BOSTIQUE</h3>
-          <p style={footerStyles.mobileTagline}>Crafted to Carry Your Story</p>
+          <p style={footerStyles.mobileTagline}>Leather Goods Crafted for Life</p>
         </div>
         <div style={footerStyles.mobileLinks}>
           <div style={footerStyles.mobileCol}>
-            <h4 style={footerStyles.mobileColTitle}>COLLECTIONS</h4>
+            <h4 style={footerStyles.mobileColTitle}>Collections</h4>
             <ul style={footerStyles.mobileColList}>
               <li><a href="#shop" style={footerStyles.mobileColLink}>Duffel Bags</a></li>
               <li><a href="#shop" style={footerStyles.mobileColLink}>Carry Bags</a></li>
@@ -207,7 +194,7 @@ export default function Footer({ isMobile }) {
             </ul>
           </div>
           <div style={footerStyles.mobileCol}>
-            <h4 style={footerStyles.mobileColTitle}>CONTACT</h4>
+            <h4 style={footerStyles.mobileColTitle}>Contact</h4>
             <ul style={footerStyles.mobileColList}>
               <li><a href="https://wa.me/919084736334" style={footerStyles.mobileColLink}>+91 90847 36334</a></li>
               <li><a href="mailto:hello@bostique.in" style={footerStyles.mobileColLink}>hello@bostique.in</a></li>
@@ -215,16 +202,15 @@ export default function Footer({ isMobile }) {
           </div>
         </div>
         <div style={footerStyles.mobileSocials}>
-          <a href="https://wa.me/919084736334" style={footerStyles.mobileSocialLink}>💬</a>
-          <a href="#" style={footerStyles.mobileSocialLink}>📸</a>
-          <a href="#" style={footerStyles.mobileSocialLink}>📘</a>
+          <a href="https://wa.me/919084736334" style={footerStyles.mobileSocialLink}>✦</a>
+          <a href="#" style={footerStyles.mobileSocialLink}>◈</a>
         </div>
         <p style={footerStyles.mobileCopy}>© 2026 Bostique. Made in India.</p>
         <a 
           href="https://wa.me/919084736334?text=Hi%20Bostique!" 
           style={footerStyles.mobileWaBtn}
         >
-          💬
+          ✦
         </a>
       </footer>
     );
@@ -235,15 +221,13 @@ export default function Footer({ isMobile }) {
       <div style={footerStyles.top}>
         <div style={footerStyles.brandCol}>
           <div style={footerStyles.brandName}>BOSTIQUE</div>
-          <div style={footerStyles.tagline}>Crafted to Carry Your Story</div>
+          <div style={footerStyles.tagline}>Leather Goods Crafted for Life</div>
           <p style={footerStyles.brandBody}>
-            Premium bags and leather goods, handcrafted for those who move with purpose. 
-            Established 2026, India.
+            Premium bags and leather accessories, handcrafted for those who move with purpose.
           </p>
           <div style={footerStyles.socials}>
-            <a href="https://wa.me/919084736334" target="_blank" style={footerStyles.socLink}>💬</a>
-            <a href="#" style={footerStyles.socLink}>📸</a>
-            <a href="#" style={footerStyles.socLink}>📘</a>
+            <a href="https://wa.me/919084736334" target="_blank" style={footerStyles.socLink}>✦</a>
+            <a href="#" style={footerStyles.socLink}>◈</a>
           </div>
         </div>
         <div style={footerStyles.col}>
@@ -259,9 +243,8 @@ export default function Footer({ isMobile }) {
           <h5 style={footerStyles.colTitle}>Information</h5>
           <ul style={footerStyles.colList}>
             <li><a href="#" style={footerStyles.colLink}>Our Story</a></li>
-            <li><a href="#" style={footerStyles.colLink}>Shipping Policy</a></li>
-            <li><a href="#" style={footerStyles.colLink}>Returns & Exchange</a></li>
-            <li><a href="#" style={footerStyles.colLink}>Size & Care Guide</a></li>
+            <li><a href="#" style={footerStyles.colLink}>Shipping</a></li>
+            <li><a href="#" style={footerStyles.colLink}>Returns</a></li>
           </ul>
         </div>
         <div style={footerStyles.col}>
@@ -275,15 +258,14 @@ export default function Footer({ isMobile }) {
       </div>
       <div style={footerStyles.bottom}>
         <span>© 2026 Bostique. All rights reserved.</span>
-        <span>Crafted with care · Made in India</span>
+        <span>Made in India</span>
       </div>
       <a 
         href="https://wa.me/919084736334?text=Hi%20Bostique!%20I%27d%20like%20to%20place%20an%20order." 
         target="_blank"
         style={footerStyles.waFloat}
       >
-        💬
-        <span style={footerStyles.waTooltip}>Order on WhatsApp</span>
+        ✦
       </a>
     </footer>
   );

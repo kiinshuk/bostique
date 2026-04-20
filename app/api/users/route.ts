@@ -1,7 +1,47 @@
 import { NextResponse } from 'next/server';
-import { getDB } from '@/app/lib/data';
+import { supabase } from '@/app/lib/supabase';
 
 export async function GET() {
-  const db = getDB();
-  return NextResponse.json(db.users.map(u => ({...u, created_at: new Date().toISOString()})));
+  const { data: users, error } = await supabase
+    .from('users')
+    .select('*')
+    .order('id');
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json(users || []);
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { name, email, phone, password } = body;
+
+  const { data: existing } = await supabase
+    .from('users')
+    .select('email')
+    .eq('email', email)
+    .single();
+
+  if (existing) {
+    return NextResponse.json({ success: false, error: 'Email already registered' }, { status: 400 });
+  }
+
+  const { data, error } = await supabase
+    .from('users')
+    .insert([{
+      name,
+      email,
+      phone: phone || '',
+      password,
+      created_at: new Date().toISOString()
+    }])
+    .select();
+
+  if (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true, userId: data[0]?.id });
 }

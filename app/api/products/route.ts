@@ -1,23 +1,45 @@
 import { NextResponse } from 'next/server';
-import { getDB } from '@/app/lib/data';
+import { supabase } from '@/app/lib/supabase';
 
 export async function GET() {
-  const db = getDB();
-  const products = db.products.map(p => {
-    const cat = db.categories.find(c => c.id === p.category_id);
-    return { ...p, category: cat ? cat.name : 'Unknown' };
-  });
-  return NextResponse.json(products);
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*, categories(name)')
+    .eq('status', 'active')
+    .order('id');
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const formatted = products.map(p => ({
+    ...p,
+    category: p.categories?.name || 'Unknown'
+  }));
+
+  return NextResponse.json(formatted);
 }
 
 export async function POST(request: Request) {
-  const db = getDB();
   const body = await request.json();
-  const newProduct = {
-    id: db.nextProdId++,
-    ...body,
-    image: body.image || ''
-  };
-  db.products.push(newProduct);
-  return NextResponse.json({ success: true, id: newProduct.id });
+  
+  const { data, error } = await supabase
+    .from('products')
+    .insert([{
+      name: body.name,
+      category_id: parseInt(body.category_id),
+      price: parseInt(body.price) || 0,
+      emoji: body.emoji || '',
+      description: body.description || '',
+      badge: body.badge || '',
+      status: body.status || 'active',
+      images: body.images || []
+    }])
+    .select();
+
+  if (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true, id: data[0]?.id });
 }

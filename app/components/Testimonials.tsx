@@ -2,113 +2,64 @@
 
 const testiStyles = {
   section: {
-    padding: '80px 80px',
-    background: 'var(--color-cream-warm)',
+    padding: '80px 48px',
+    background: 'var(--color-gray-50)',
   },
   header: {
     textAlign: 'center' as const,
     marginBottom: '48px',
   },
   eyebrow: {
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     letterSpacing: '0.2em',
     color: 'var(--color-text-muted)',
-    marginBottom: '12px',
+    marginBottom: '8px',
+    textTransform: 'uppercase',
   },
   title: {
     fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(2rem, 3vw, 2.5rem)',
-    fontWeight: 300,
-    color: 'var(--color-charcoal)',
+    fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
+    fontWeight: 400,
+    color: 'var(--color-black)',
   },
-  layout: {
+  grid: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1.5fr',
-    gap: '64px',
-    alignItems: 'start',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '24px',
   },
-  intro: {},
-  introTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(2rem, 3vw, 2.5rem)',
-    fontWeight: 300,
-    lineHeight: 1.3,
-    marginBottom: '20px',
-  },
-  introHighlight: {
-    fontStyle: 'italic',
-    color: 'var(--color-cognac)',
-  },
-  introBody: {
-    fontSize: '1rem',
-    color: 'var(--color-text-secondary)',
-    lineHeight: 1.6,
-    maxWidth: '400px',
-  },
-  ratingWrap: {
-    marginTop: '32px',
-    paddingTop: '28px',
-    borderTop: '1px solid var(--color-border)',
+  card: {
+    padding: '32px',
+    background: 'var(--color-white)',
+    borderRadius: '0',
   },
   stars: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '2.5rem',
-    color: 'var(--color-gold)',
-    lineHeight: 1,
-  },
-  ratingLabel: {
-    fontSize: '0.72rem',
-    letterSpacing: '0.15em',
-    textTransform: 'uppercase',
-    color: 'var(--color-text-secondary)',
-    marginTop: '4px',
-  },
-  list: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '20px',
-  },
-  item: {
-    display: 'flex',
-    gap: '16px',
-    padding: '24px',
-    background: 'var(--color-surface)',
-    borderRadius: 'var(--radius-lg)',
-    boxShadow: 'var(--shadow-sm)',
-  },
-  initial: {
-    width: '48px',
-    height: '48px',
-    background: 'var(--color-gold)',
-    color: 'var(--color-white)',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 600,
-    fontSize: '1.1rem',
-    flexShrink: 0,
-  },
-  itemContent: {},
-  starsRow: {
-    color: 'var(--color-gold)',
     fontSize: '0.9rem',
-    marginBottom: '8px',
+    color: 'var(--color-black)',
+    marginBottom: '16px',
+    letterSpacing: '2px',
   },
   text: {
     fontSize: '0.95rem',
     color: 'var(--color-text-primary)',
-    lineHeight: 1.5,
-    marginBottom: '8px',
+    lineHeight: 1.6,
+    marginBottom: '16px',
     fontStyle: 'italic',
   },
   author: {
     fontSize: '0.8rem',
+    color: 'var(--color-text-muted)',
+  },
+  ratingWrap: {
+    marginTop: '32px',
+    textAlign: 'center' as const,
+  },
+  ratingText: {
+    fontSize: '0.8rem',
     color: 'var(--color-text-secondary)',
   },
   mobileSection: {
-    padding: '40px 20px',
-    background: 'var(--color-cream-warm)',
+    padding: '48px 20px',
+    background: 'var(--color-gray-50)',
   },
   mobileHeader: {
     textAlign: 'center' as const,
@@ -118,12 +69,14 @@ const testiStyles = {
     fontSize: '0.65rem',
     letterSpacing: '0.15em',
     color: 'var(--color-text-muted)',
-    marginBottom: '8px',
+    marginBottom: '4px',
+    textTransform: 'uppercase',
   },
   mobileTitle: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.5rem',
-    fontWeight: 300,
+    fontSize: '1.25rem',
+    fontWeight: 400,
+    color: 'var(--color-black)',
   },
   scrollWrap: {
     display: 'flex',
@@ -132,47 +85,35 @@ const testiStyles = {
     paddingBottom: '10px',
     scrollbarWidth: 'none' as React.CSSProperties['scrollbarWidth'],
   },
-  card: {
-    minWidth: '280px',
-    padding: '20px',
-    background: 'var(--color-surface)',
-    borderRadius: 'var(--radius-lg)',
-    boxShadow: 'var(--shadow-md)',
+  mobileCard: {
+    minWidth: '260px',
+    padding: '24px',
+    background: 'var(--color-white)',
+    borderRadius: '0',
   },
-  cardInitial: {
-    width: '40px',
-    height: '40px',
-    background: 'var(--color-gold)',
-    color: 'var(--color-white)',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 600,
+  mobileCardStars: {
+    fontSize: '0.8rem',
+    color: 'var(--color-black)',
     marginBottom: '12px',
+    letterSpacing: '2px',
   },
-  cardText: {
+  mobileCardText: {
     fontSize: '0.85rem',
     color: 'var(--color-text-primary)',
     marginBottom: '12px',
     lineHeight: 1.5,
     fontStyle: 'italic',
   },
-  cardAuthor: {
+  mobileCardAuthor: {
     fontSize: '0.75rem',
-    color: 'var(--color-text-secondary)',
-  },
-  cardStars: {
-    color: 'var(--color-gold)',
-    fontSize: '0.9rem',
-    marginTop: '8px',
+    color: 'var(--color-text-muted)',
   },
 };
 
 const testimonials = [
-  { initial: 'R', text: "The leather backpack is absolutely stunning. Everyone at the office asks where I got it.", author: 'Rahul Mehta · Delhi' },
-  { initial: 'P', text: "Ordered the duffel for my Goa trip — held everything perfectly!", author: 'Priya Sharma · Mumbai' },
-  { initial: 'A', text: "The leather cushion covers transformed my living room. Rich texture!", author: 'Anjali Verma · Bangalore' },
+  { text: "The leather backpack is absolutely stunning. Everyone at the office asks where I got it.", author: 'Rahul Mehta, Delhi' },
+  { text: "Ordered the duffel for my Goa trip — held everything perfectly!", author: 'Priya Sharma, Mumbai' },
+  { text: "The leather cushion covers transformed my living room. Rich texture!", author: 'Anjali Verma, Bangalore' },
 ];
 
 export default function Testimonials({ isMobile }) {
@@ -180,16 +121,15 @@ export default function Testimonials({ isMobile }) {
     return (
       <section style={testiStyles.mobileSection}>
         <div style={testiStyles.mobileHeader}>
-          <p style={testiStyles.mobileEyebrow}>CUSTOMER STORIES</p>
+          <p style={testiStyles.mobileEyebrow}>Customer Stories</p>
           <h2 style={testiStyles.mobileTitle}>What our customers say</h2>
         </div>
         <div style={testiStyles.scrollWrap}>
           {testimonials.map((t, i) => (
-            <div key={i} style={testiStyles.card}>
-              <div style={testiStyles.cardInitial}>{t.initial}</div>
-              <p style={testiStyles.cardText}>"{t.text}"</p>
-              <p style={testiStyles.cardAuthor}>{t.author}</p>
-              <div style={testiStyles.cardStars}>★★★★★</div>
+            <div key={i} style={testiStyles.mobileCard}>
+              <div style={testiStyles.mobileCardStars}>★★★★★</div>
+              <p style={testiStyles.mobileCardText}>"{t.text}"</p>
+              <p style={testiStyles.mobileCardAuthor}>{t.author}</p>
             </div>
           ))}
         </div>
@@ -200,35 +140,20 @@ export default function Testimonials({ isMobile }) {
   return (
     <section style={testiStyles.section}>
       <div style={testiStyles.header}>
-        <p style={testiStyles.eyebrow}>CUSTOMER STORIES</p>
+        <p style={testiStyles.eyebrow}>Customer Stories</p>
         <h2 style={testiStyles.title}>What our customers say</h2>
       </div>
-      <div style={testiStyles.layout}>
-        <div style={testiStyles.intro}>
-          <h3 style={testiStyles.introTitle}>
-            Real people.<br /><em style={testiStyles.introHighlight}>Real stories.</em>
-          </h3>
-          <p style={testiStyles.introBody}>
-            Our customers don't just buy bags — they invest in companions for their journeys. 
-            Here's what some of them have to say.
-          </p>
-          <div style={testiStyles.ratingWrap}>
+      <div style={testiStyles.grid}>
+        {testimonials.map((t, i) => (
+          <div key={i} style={testiStyles.card}>
             <div style={testiStyles.stars}>★★★★★</div>
-            <p style={testiStyles.ratingLabel}>5.0 Average Rating</p>
+            <p style={testiStyles.text}>"{t.text}"</p>
+            <p style={testiStyles.author}>{t.author}</p>
           </div>
-        </div>
-        <div style={testiStyles.list}>
-          {testimonials.map((t, i) => (
-            <div key={i} style={testiStyles.item}>
-              <div style={testiStyles.initial}>{t.initial}</div>
-              <div style={testiStyles.itemContent}>
-                <div style={testiStyles.starsRow}>★★★★★</div>
-                <p style={testiStyles.text}>"{t.text}"</p>
-                <p style={testiStyles.author}>{t.author}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        ))}
+      </div>
+      <div style={testiStyles.ratingWrap}>
+        <p style={testiStyles.ratingText}>5.0 Average Rating</p>
       </div>
     </section>
   );

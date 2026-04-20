@@ -2,37 +2,37 @@
 
 const catStyles = {
   section: {
-    padding: '80px 80px',
-    background: 'var(--color-surface)',
+    padding: '80px 48px',
+    background: 'var(--color-white)',
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     marginBottom: '48px',
+    flexWrap: 'wrap' as const,
+    gap: '16px',
   },
   headerLeft: {},
   eyebrow: {
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     letterSpacing: '0.2em',
     color: 'var(--color-text-muted)',
     marginBottom: '8px',
+    textTransform: 'uppercase',
   },
   h2: {
     fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(2rem, 3.5vw, 3rem)',
-    fontWeight: 300,
-    color: 'var(--color-charcoal)',
+    fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+    fontWeight: 400,
+    color: 'var(--color-black)',
+    letterSpacing: '-0.02em',
   },
   viewAll: {
     fontSize: '0.75rem',
-    letterSpacing: '0.15em',
-    textTransform: 'uppercase',
-    fontWeight: 500,
     color: 'var(--color-text-secondary)',
-    borderBottom: '1px solid var(--color-border)',
-    paddingBottom: '4px',
     cursor: 'pointer',
+    transition: 'color 0.2s',
   },
   grid: {
     display: 'grid',
@@ -41,21 +41,17 @@ const catStyles = {
   },
   panel: {
     position: 'relative' as const,
-    height: '320px',
-    borderRadius: 'var(--radius-lg)',
+    aspectRatio: '3/4',
+    borderRadius: '0',
     overflow: 'hidden',
     cursor: 'pointer',
-    background: 'var(--color-cream-warm)',
+    background: 'var(--color-gray-50)',
   },
-  bgArt: {
+  bgImage: {
     position: 'absolute' as const,
     inset: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.15,
-    fontSize: '6rem',
-    transition: 'all var(--transition-base)',
+    background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%)',
+    transition: 'opacity 0.3s ease',
   },
   content: {
     position: 'relative' as const,
@@ -68,32 +64,26 @@ const catStyles = {
   },
   num: {
     fontSize: '0.65rem',
-    letterSpacing: '0.2em',
-    color: 'var(--color-gold)',
-    marginBottom: '12px',
+    letterSpacing: '0.15em',
+    color: 'rgba(255,255,255,0.6)',
+    marginBottom: '8px',
+    textTransform: 'uppercase',
   },
   title: {
     fontFamily: 'var(--font-display)',
     fontSize: '1.25rem',
     fontWeight: 400,
-    color: 'var(--color-charcoal)',
+    color: 'var(--color-white)',
     lineHeight: 1.3,
-    marginBottom: '8px',
+    marginBottom: '4px',
   },
   sub: {
     fontSize: '0.8rem',
-    color: 'var(--color-text-secondary)',
-    marginBottom: '16px',
-  },
-  arrow: {
-    fontSize: '0.75rem',
-    letterSpacing: '0.1em',
-    color: 'var(--color-cognac)',
-    fontWeight: 500,
+    color: 'rgba(255,255,255,0.7)',
   },
   mobileSection: {
-    padding: '40px 20px',
-    background: 'var(--color-surface)',
+    padding: '48px 20px',
+    background: 'var(--color-white)',
   },
   mobileHeader: {
     marginBottom: '20px',
@@ -102,12 +92,14 @@ const catStyles = {
     fontSize: '0.65rem',
     letterSpacing: '0.15em',
     color: 'var(--color-text-muted)',
-    marginBottom: '5px',
+    marginBottom: '4px',
+    textTransform: 'uppercase',
   },
   mobileH2: {
     fontFamily: 'var(--font-display)',
     fontSize: '1.5rem',
-    fontWeight: 300,
+    fontWeight: 400,
+    color: 'var(--color-black)',
   },
   scrollWrap: {
     display: 'flex',
@@ -118,31 +110,30 @@ const catStyles = {
   },
   card: {
     minWidth: '140px',
-    padding: '20px',
-    background: 'var(--color-surface)',
-    borderRadius: 'var(--radius-lg)',
-    boxShadow: 'var(--shadow-md)',
+    padding: '24px 16px',
+    background: 'var(--color-gray-50)',
+    borderRadius: '0',
     textAlign: 'center' as const,
     cursor: 'pointer',
-    border: '1px solid var(--color-line)',
-    transition: 'all var(--transition-base)',
+    transition: 'background 0.2s',
   },
   cardIcon: {
-    fontSize: '2rem',
-    marginBottom: '10px',
+    fontSize: '1.75rem',
+    marginBottom: '12px',
   },
   cardName: {
-    fontWeight: 500,
-    fontSize: '0.85rem',
-    color: 'var(--color-charcoal)',
+    fontFamily: 'var(--font-display)',
+    fontSize: '0.9rem',
+    fontWeight: 400,
+    color: 'var(--color-black)',
   },
 };
 
 const catSubtitles: Record<string, string> = {
-  'Duffel Bag': 'Weekend & Travel',
-  'Carry Bag': 'Everyday Essentials',
-  'Backpack': 'Work & Adventure',
-  'Cushion Cover': 'Home Luxury',
+  'Duffel Bag': 'Travel',
+  'Carry Bag': 'Everyday',
+  'Backpack': 'Work',
+  'Cushion Cover': 'Home',
 };
 
 export default function Categories({ categories, onCategoryClick, isMobile }) {
@@ -150,8 +141,8 @@ export default function Categories({ categories, onCategoryClick, isMobile }) {
     return (
       <section style={catStyles.mobileSection}>
         <div style={catStyles.mobileHeader}>
-          <p style={catStyles.mobileEyebrow}>BROWSE</p>
-          <h2 style={catStyles.mobileH2}>Collections</h2>
+          <p style={catStyles.mobileEyebrow}>Collections</p>
+          <h2 style={catStyles.mobileH2}>Browse</h2>
         </div>
         <div style={catStyles.scrollWrap}>
           {categories.map(cat => (
@@ -173,20 +164,19 @@ export default function Categories({ categories, onCategoryClick, isMobile }) {
     <section id="categories" style={catStyles.section}>
       <div style={catStyles.header}>
         <div style={catStyles.headerLeft}>
-          <p style={catStyles.eyebrow}>BROWSE</p>
-          <h2 style={catStyles.h2}>All Collections</h2>
+          <p style={catStyles.eyebrow}>Collections</p>
+          <h2 style={catStyles.h2}>Browse by Category</h2>
         </div>
         <a href="#shop" style={catStyles.viewAll}>View All →</a>
       </div>
       <div style={catStyles.grid}>
         {categories.map(cat => (
           <div key={cat.id} style={catStyles.panel} onClick={() => onCategoryClick(cat.name)}>
-            <div style={catStyles.bgArt}>{cat.icon}</div>
+            <div style={catStyles.bgImage}></div>
             <div style={catStyles.content}>
               <span style={catStyles.num}>0{cat.id}</span>
               <h3 style={catStyles.title}>{cat.name}</h3>
               <p style={catStyles.sub}>{catSubtitles[cat.name] || ''}</p>
-              <span style={catStyles.arrow}>Shop Now →</span>
             </div>
           </div>
         ))}

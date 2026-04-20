@@ -2,8 +2,8 @@
 
 const shopStyles = {
   section: {
-    padding: '80px 80px',
-    background: 'var(--color-surface)',
+    padding: '80px 48px',
+    background: 'var(--color-white)',
   },
   header: {
     display: 'flex',
@@ -23,13 +23,14 @@ const shopStyles = {
   },
   h2: {
     fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(2rem, 3.5vw, 2.8rem)',
-    fontWeight: 300,
-    color: 'var(--color-charcoal)',
+    fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
+    fontWeight: 400,
+    color: 'var(--color-black)',
+    letterSpacing: '-0.02em',
   },
   highlight: {
     fontStyle: 'italic',
-    color: 'var(--color-cognac)',
+    color: 'var(--color-gray-700)',
   },
   filterRow: {
     display: 'flex',
@@ -38,100 +39,80 @@ const shopStyles = {
   },
   filterBtn: {
     padding: '10px 20px',
-    border: '1px solid var(--color-border)',
+    border: '1px solid var(--color-gray-300)',
     background: 'transparent',
     color: 'var(--color-text-primary)',
-    borderRadius: 'var(--radius-sm)',
+    borderRadius: '0',
     cursor: 'pointer',
-    fontSize: '0.85rem',
-    transition: 'all var(--transition-fast)',
+    fontSize: '0.75rem',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+    transition: 'all 0.2s ease',
   },
   filterBtnActive: {
-    background: 'var(--color-gold)',
+    background: 'var(--color-black)',
     color: 'var(--color-white)',
-    borderColor: 'var(--color-gold)',
+    borderColor: 'var(--color-black)',
   },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '30px',
+    gap: '32px',
   },
   card: {
-    background: 'var(--color-surface)',
-    borderRadius: 'var(--radius-lg)',
+    background: 'var(--color-white)',
+    borderRadius: '0',
     overflow: 'hidden',
-    boxShadow: 'var(--shadow-md)',
     cursor: 'pointer',
-    transition: 'transform var(--transition-base), box-shadow var(--transition-base)',
+    transition: 'opacity 0.2s ease',
   },
   imageWrap: {
-    height: '220px',
-    background: 'var(--color-cream-warm)',
+    aspectRatio: '4/5',
+    background: 'var(--color-gray-50)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative' as const,
+    overflow: 'hidden',
   },
   badge: {
     position: 'absolute' as const,
     top: '12px',
     right: '12px',
     padding: '6px 12px',
-    borderRadius: 'var(--radius-sm)',
-    fontSize: '0.7rem',
+    background: 'var(--color-black)',
+    color: 'var(--color-white)',
+    fontSize: '0.65rem',
     fontWeight: 500,
     letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+    borderRadius: '0',
   },
   content: {
-    padding: '20px',
+    padding: '20px 0',
   },
   category: {
-    fontSize: '0.7rem',
+    fontSize: '0.65rem',
     color: 'var(--color-text-muted)',
-    marginBottom: '4px',
+    marginBottom: '8px',
     textTransform: 'uppercase',
     letterSpacing: '0.1em',
   },
   name: {
+    fontFamily: 'var(--font-display)',
     fontSize: '1.1rem',
-    fontWeight: 500,
+    fontWeight: 400,
     marginBottom: '8px',
-    color: 'var(--color-charcoal)',
+    color: 'var(--color-black)',
   },
   price: {
-    fontSize: '1rem',
-    fontWeight: 600,
-    color: 'var(--color-cognac)',
-    marginBottom: '16px',
-  },
-  actions: {
-    display: 'flex',
-    gap: '12px',
-  },
-  addBtn: {
-    flex: 1,
-    padding: '12px',
-    background: 'var(--color-charcoal)',
-    color: 'var(--color-white)',
-    border: 'none',
-    borderRadius: 'var(--radius-md)',
-    cursor: 'pointer',
-    fontSize: '0.85rem',
+    fontSize: '0.95rem',
     fontWeight: 500,
-    transition: 'background var(--transition-fast)',
-  },
-  viewBtn: {
-    padding: '12px 16px',
-    background: 'transparent',
-    color: 'var(--color-charcoal)',
-    border: '1px solid var(--color-border)',
-    borderRadius: 'var(--radius-md)',
-    cursor: 'pointer',
-    transition: 'border-color var(--transition-fast)',
+    color: 'var(--color-black)',
   },
   mobileSection: {
-    padding: '40px 20px',
-    background: 'var(--color-surface)',
+    padding: '48px 20px',
+    background: 'var(--color-white)',
   },
   mobileHeader: {
     marginBottom: '20px',
@@ -141,12 +122,13 @@ const shopStyles = {
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
     color: 'var(--color-text-muted)',
-    marginBottom: '5px',
+    marginBottom: '4px',
   },
   mobileH2: {
     fontFamily: 'var(--font-display)',
     fontSize: '1.5rem',
-    fontWeight: 300,
+    fontWeight: 400,
+    color: 'var(--color-black)',
   },
   mobileFilters: {
     display: 'flex',
@@ -158,33 +140,32 @@ const shopStyles = {
   },
   mobileFilter: {
     padding: '8px 16px',
-    border: '1px solid var(--color-border)',
-    background: 'var(--color-surface)',
+    border: '1px solid var(--color-gray-300)',
+    background: 'var(--color-white)',
     color: 'var(--color-text-primary)',
-    borderRadius: 'var(--radius-full)',
+    borderRadius: '0',
     cursor: 'pointer',
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     whiteSpace: 'nowrap' as const,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
   },
   mobileGrid: {
     display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '20px',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '16px',
   },
   mobileCard: {
-    background: 'var(--color-surface)',
-    borderRadius: 'var(--radius-lg)',
+    background: 'var(--color-white)',
+    borderRadius: '0',
     overflow: 'hidden',
-    boxShadow: 'var(--shadow-md)',
     cursor: 'pointer',
-    border: '1px solid var(--color-line)',
     display: 'flex',
-    flexDirection: 'row' as const,
+    flexDirection: 'column' as const,
   },
   mobileImage: {
-    width: '120px',
-    height: '120px',
-    background: 'var(--color-cream-warm)',
+    aspectRatio: '1/1.2',
+    background: 'var(--color-gray-50)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -195,62 +176,37 @@ const shopStyles = {
     position: 'absolute' as const,
     top: '6px',
     left: '6px',
-    padding: '3px 6px',
-    borderRadius: 'var(--radius-sm)',
-    fontSize: '0.55rem',
-    fontWeight: 600,
+    padding: '4px 8px',
+    background: 'var(--color-black)',
+    color: 'var(--color-white)',
+    fontSize: '0.5rem',
+    fontWeight: 500,
+    textTransform: 'uppercase',
+    borderRadius: '0',
     zIndex: 2,
   },
   mobileContent: {
-    padding: '12px',
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column' as const,
-    justifyContent: 'center',
+    padding: '12px 0',
   },
   mobileCategory: {
-    fontSize: '0.6rem',
+    fontSize: '0.55rem',
     color: 'var(--color-text-muted)',
-    marginBottom: '2px',
+    marginBottom: '4px',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
   },
   mobileName: {
-    fontSize: '0.95rem',
-    fontWeight: 600,
+    fontFamily: 'var(--font-display)',
+    fontSize: '0.85rem',
+    fontWeight: 400,
     marginBottom: '4px',
-    color: 'var(--color-charcoal)',
+    color: 'var(--color-black)',
     lineHeight: 1.3,
   },
-  mobileDesc: {
-    fontSize: '0.75rem',
-    color: 'var(--color-text-secondary)',
-    marginBottom: '6px',
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical' as const,
-    overflow: 'hidden',
-  },
-  mobilePriceRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 'auto',
-  },
   mobilePrice: {
-    fontSize: '1rem',
-    fontWeight: 700,
-    color: 'var(--color-cognac)',
-  },
-  mobileAddBtn: {
-    padding: '8px 16px',
-    background: 'var(--color-charcoal)',
-    color: 'var(--color-white)',
-    border: 'none',
-    borderRadius: 'var(--radius-md)',
-    cursor: 'pointer',
-    fontSize: '0.75rem',
+    fontSize: '0.85rem',
     fontWeight: 500,
+    color: 'var(--color-black)',
   },
 };
 
@@ -273,10 +229,8 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
     return (
       <section style={shopStyles.mobileSection}>
         <div style={shopStyles.mobileHeader}>
-          <p style={shopStyles.mobileEyebrow}>THE COLLECTION</p>
-          <h2 style={shopStyles.mobileH2}>
-            Shop <em style={shopStyles.highlight}>Bostique</em>
-          </h2>
+          <p style={shopStyles.mobileEyebrow}>The Collection</p>
+          <h2 style={shopStyles.mobileH2}>Shop</h2>
         </div>
         <div style={shopStyles.mobileFilters}>
           {filters.map(f => (
@@ -306,27 +260,13 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
                   <span style={{ fontSize: '2.5rem' }}>{product.emoji}</span>
                 )}
                 {product.badge && (
-                  <span style={{ 
-                    ...shopStyles.mobileBadge,
-                    background: product.badge === 'Sale' ? 'var(--color-error)' : 'var(--color-success)',
-                  }}>
-                    {product.badge}
-                  </span>
+                  <span style={shopStyles.mobileBadge}>{product.badge}</span>
                 )}
               </div>
               <div style={shopStyles.mobileContent}>
                 <p style={shopStyles.mobileCategory}>{product.category}</p>
                 <h3 style={shopStyles.mobileName}>{product.name}</h3>
-                <p style={shopStyles.mobileDesc}>{product.desc || product.description || ''}</p>
-                <div style={shopStyles.mobilePriceRow}>
-                  <span style={shopStyles.mobilePrice}>₹{product.price.toLocaleString()}</span>
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                    style={shopStyles.mobileAddBtn}
-                  >
-                    Add
-                  </button>
-                </div>
+                <span style={shopStyles.mobilePrice}>₹{product.price.toLocaleString()}</span>
               </div>
             </div>
           ))}
@@ -339,10 +279,8 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
     <section id="shop" style={shopStyles.section}>
       <div style={shopStyles.header}>
         <div style={shopStyles.headerLeft}>
-          <p style={shopStyles.eyebrow}>THE COLLECTION</p>
-          <h2 style={shopStyles.h2}>
-            Shop All <em style={shopStyles.highlight}>Bostique</em>
-          </h2>
+          <p style={shopStyles.eyebrow}>The Collection</p>
+          <h2 style={shopStyles.h2}>Shop All</h2>
         </div>
         <div style={shopStyles.filterRow}>
           {filters.map(f => (
@@ -365,46 +303,19 @@ export default function Shop({ products, filter, onFilterChange, onAddToCart, on
             key={product.id} 
             onClick={() => onProductClick(product)}
             style={shopStyles.card}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
           >
             <div style={shopStyles.imageWrap}>
               {product.images && product.images[0] ? (
                 <img src={product.images[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <span style={{ fontSize: '5rem' }}>{product.emoji}</span>
+                <span style={{ fontSize: '4rem' }}>{product.emoji}</span>
               )}
-              {product.badge && (
-                <span style={{ 
-                  ...shopStyles.badge,
-                  background: product.badge === 'Sale' ? 'var(--color-error)' : 'var(--color-success)',
-                }}>
-                  {product.badge}
-                </span>
-              )}
+              {product.badge && <span style={shopStyles.badge}>{product.badge}</span>}
             </div>
             <div style={shopStyles.content}>
               <p style={shopStyles.category}>{product.category}</p>
               <h3 style={shopStyles.name}>{product.name}</h3>
               <p style={shopStyles.price}>₹{product.price.toLocaleString()}</p>
-              <div style={shopStyles.actions}>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                  style={shopStyles.addBtn}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-cognac)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'var(--color-charcoal)'}
-                >
-                  Add to Bag
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); onProductClick(product); }}
-                  style={shopStyles.viewBtn}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-cognac)'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
-                >
-                  View
-                </button>
-              </div>
             </div>
           </div>
         ))}

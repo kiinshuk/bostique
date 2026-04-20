@@ -167,23 +167,27 @@ export default function Dashboard() {
       category: categories.find(c => c.id === parseInt(prodForm.category_id))?.name || 'Unknown'
     };
 
-    if (prodForm.id) {
-      const updatedProducts = products.map(p => 
-        p.id === prodForm.id ? { ...p, ...productData, desc: productData.description } : p
-      );
-      setProducts(updatedProducts);
-      showToast('Product updated!');
-    } else {
-      const newProduct = { ...productData, id: Date.now(), desc: productData.description };
-      setProducts([...products, newProduct]);
-      showToast('Product created!');
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      });
+      const result = await res.json();
+      
+      if (result.success) {
+        showToast('Product created!');
+        loadData();
+      }
+    } catch (e) {
+      showToast('Error saving product');
     }
     
     resetForm();
     setActiveSection('products');
   }
 
-  function deleteProduct(id) {
+  async function deleteProduct(id) {
     if (confirm('Delete this product?')) {
       setProducts(products.filter(p => p.id !== id));
       showToast('Product deleted');
@@ -193,9 +197,24 @@ export default function Dashboard() {
   async function addCategory() {
     if (!catForm.name) return;
     const newCat = { id: Date.now(), name: catForm.name, icon: catForm.icon || '📦' };
-    setCategories([...categories, newCat]);
+    
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCat)
+      });
+      const result = await res.json();
+      
+      if (result.success) {
+        showToast('Category added');
+        loadData();
+      }
+    } catch (e) {
+      showToast('Error adding category');
+    }
+    
     setCatForm({ name: '', icon: '' });
-    showToast('Category added');
   }
 
   if (!isAuthenticated) {

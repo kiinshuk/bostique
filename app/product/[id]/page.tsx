@@ -10,7 +10,7 @@ const fallbackProducts = [
   {id:4,name:'Market Carry Bag',category:'Carry Bag',category_id:2,price:1299,emoji:'👜',desc:'Durable canvas and leather.',badge:'',status:'active',images:['']},
   {id:5,name:'Urban Pro Backpack',category:'Backpack',category_id:3,price:2999,emoji:'🎒',desc:'Work-ready leather backpack.',badge:'New',status:'active',images:['']},
   {id:6,name:'Trail Backpack',category:'Backpack',category_id:3,price:2199,emoji:'🎒',desc:'Adventure-ready backpack.',badge:'',status:'active',images:['']},
-  {id:7,name:'Cognac Cushion Cover',category:'Cuffion Cover',category_id:4,price:899,emoji:'🛋️',desc:'Luxurious leather cushion.',badge:'New',status:'active',images:['']},
+  {id:7,name:'Cognac Cushion Cover',category:'Cushion Cover',category_id:4,price:899,emoji:'🛋️',desc:'Luxurious leather cushion.',badge:'New',status:'active',images:['']},
   {id:8,name:'Tan Leather Cushion Pair',category:'Cushion Cover',category_id:4,price:1699,emoji:'🪑',desc:'Set of 2 cushion covers.',badge:'Sale',status:'active',images:['']}
 ];
 
@@ -76,7 +76,6 @@ export default function ProductPage() {
       setProduct(found);
       setSelectedImage(0);
     } else {
-      const productId = parseInt(Array.isArray(params.id) ? params.id[0] : params.id);
       const fallback = fallbackProducts.find(p => p.id === productId);
       if (fallback) setProduct(fallback);
     }
@@ -108,15 +107,17 @@ export default function ProductPage() {
     window.open(`https://wa.me/919084736334?text=${encodeURIComponent(message)}`, '_blank');
   }
 
+  const recommendedProducts = products.filter(p => p.id !== product?.id).slice(0, 4);
+
   if (loading) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>;
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-white)' }}>Loading...</div>;
   }
 
   if (!product) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <h2>Product not found</h2>
-        <button onClick={() => router.push('/')} style={{ marginTop: '20px', padding: '12px 24px', background: '#333', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-white)' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem' }}>Product not found</h2>
+        <button onClick={() => router.push('/')} style={{ marginTop: '20px', padding: '12px 24px', background: 'var(--color-black)', color: 'white', border: 'none', fontSize: '0.8rem', letterSpacing: '0.1em', cursor: 'pointer' }}>
           Back to Shop
         </button>
       </div>
@@ -136,14 +137,14 @@ export default function ProductPage() {
 
   if (isMobile) {
     return (
-      <div style={{ minHeight: '100vh', background: 'var(--color-cream-warm)' }}>
-        <header style={{ background: 'var(--color-charcoal)', color: 'white', padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
+      <div style={{ minHeight: '100vh', background: 'var(--color-white)' }}>
+        <header style={{ background: 'var(--color-black)', color: 'white', padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
           <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer' }}>←</button>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', letterSpacing: '0.1em' }}>BOSTIQUE</span>
           <button onClick={() => router.push('/cart')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
             🛒
             {cartCount > 0 && (
-              <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-cognac)', color: 'white', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-white)', color: 'var(--color-black)', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>
                 {cartCount}
               </span>
             )}
@@ -151,7 +152,7 @@ export default function ProductPage() {
         </header>
 
         <div style={{ padding: '20px' }}>
-          <div style={{ position: 'relative', background: 'white', borderRadius: '12px', overflow: 'hidden', marginBottom: '20px' }}>
+          <div style={{ position: 'relative', background: 'var(--color-gray-50)', borderRadius: '0', overflow: 'hidden', marginBottom: '20px' }}>
             <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
               {images[selectedImage] ? (
                 <img src={images[selectedImage]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -163,13 +164,13 @@ export default function ProductPage() {
                 <>
                   <button 
                     onClick={prevImage}
-                    style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', width: '36px', height: '36px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                    style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', width: '36px', height: '36px', borderRadius: '0', border: 'none', background: 'var(--color-white)', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
                   >
                     ‹
                   </button>
                   <button 
                     onClick={nextImage}
-                    style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', width: '36px', height: '36px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                    style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', width: '36px', height: '36px', borderRadius: '0', border: 'none', background: 'var(--color-white)', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
                   >
                     ›
                   </button>
@@ -177,7 +178,7 @@ export default function ProductPage() {
                     {images.filter(Boolean).map((_, idx) => (
                       <div 
                         key={idx}
-                        style={{ width: '8px', height: '8px', borderRadius: '50%', background: selectedImage === idx ? 'var(--color-cognac)' : 'rgba(255,255,255,0.5)' }}
+                        style={{ width: '8px', height: '8px', borderRadius: '0', background: selectedImage === idx ? 'var(--color-black)' : 'rgba(255,255,255,0.5)' }}
                       />
                     ))}
                   </div>
@@ -185,7 +186,7 @@ export default function ProductPage() {
               )}
             </div>
             {product.badge && (
-              <span style={{ position: 'absolute', top: '12px', left: '12px', background: product.badge === 'Sale' ? 'var(--color-error)' : 'var(--color-success)', color: 'white', padding: '6px 12px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+              <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'var(--color-black)', color: 'white', padding: '6px 12px', borderRadius: '0', fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                 {product.badge}
               </span>
             )}
@@ -197,7 +198,7 @@ export default function ProductPage() {
                 <button 
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
-                  style={{ width: '60px', height: '60px', borderRadius: '8px', overflow: 'hidden', border: selectedImage === idx ? '2px solid var(--color-cognac)' : '2px solid transparent', flexShrink: 0, padding: 0 }}
+                  style={{ width: '60px', height: '60px', borderRadius: '0', overflow: 'hidden', border: selectedImage === idx ? '2px solid var(--color-black)' : '2px solid transparent', flexShrink: 0, padding: 0 }}
                 >
                   <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </button>
@@ -205,36 +206,64 @@ export default function ProductPage() {
             </div>
           )}
 
-          <div style={{ background: 'white', borderRadius: '12px', padding: '20px' }}>
+          <div style={{ background: 'var(--color-white)', borderRadius: '0', padding: '20px' }}>
             <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>{product.category}</p>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 400, marginBottom: '12px' }}>{product.name}</h1>
-            <p style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-cognac)', marginBottom: '20px' }}>₹{product.price.toLocaleString()}</p>
+            <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-black)', marginBottom: '20px' }}>₹{product.price.toLocaleString()}</p>
             
             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', lineHeight: 1.6, marginBottom: '24px' }}>
               {product.desc || product.description || 'Premium quality leather product from Bostique.'}
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Quantity:</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '4px' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Qty:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid var(--color-gray-300)', borderRadius: '0', padding: '4px' }}>
                 <button onClick={() => setQty(Math.max(1, qty - 1))} style={{ width: '32px', height: '32px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '1.2rem' }}>−</button>
                 <span style={{ minWidth: '24px', textAlign: 'center', fontWeight: 600 }}>{qty}</span>
                 <button onClick={() => setQty(qty + 1)} style={{ width: '32px', height: '32px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '1.2rem' }}>+</button>
               </div>
             </div>
 
-            <button onClick={addToCart} style={{ width: '100%', padding: '14px', background: 'var(--color-charcoal)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', marginBottom: '12px' }}>
+            <button onClick={addToCart} style={{ width: '100%', padding: '14px', background: 'var(--color-black)', color: 'white', border: 'none', borderRadius: '0', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: '12px' }}>
               Add to Bag - ₹{(product.price * qty).toLocaleString()}
             </button>
             
-            <button onClick={handleWhatsAppOrder} style={{ width: '100%', padding: '14px', background: '#25D366', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}>
-              💬 Order on WhatsApp
+            <button onClick={handleWhatsAppOrder} style={{ width: '100%', padding: '14px', background: '#25D366', color: 'white', border: 'none', borderRadius: '0', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', cursor: 'pointer' }}>
+              WhatsApp Order
             </button>
           </div>
         </div>
 
+        {recommendedProducts.length > 0 && (
+          <section style={{ padding: '40px 20px', background: 'var(--color-gray-50)' }}>
+            <p style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: '16px' }}>You May Also Like</p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 400, color: 'var(--color-black)', marginBottom: '20px' }}>Recommended Products</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              {recommendedProducts.map(p => (
+                <div 
+                  key={p.id}
+                  onClick={() => router.push(`/product/${p.id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div style={{ background: 'var(--color-white)', borderRadius: '0', overflow: 'hidden', marginBottom: '8px' }}>
+                    <div style={{ aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-gray-50)' }}>
+                      {p.images && p.images[0] ? (
+                        <img src={p.images[0]} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <span style={{ fontSize: '2rem' }}>{p.emoji}</span>
+                      )}
+                    </div>
+                  </div>
+                  <p style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--color-black)', marginBottom: '4px' }}>{p.name}</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>₹{p.price.toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {toast && (
-          <div style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', background: 'var(--color-charcoal)', color: 'white', padding: '12px 24px', borderRadius: '8px', zIndex: 1000 }}>
+          <div style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', background: 'var(--color-black)', color: 'white', padding: '12px 24px', borderRadius: '0', zIndex: 1000, fontSize: '0.8rem' }}>
             {toast}
           </div>
         )}
@@ -243,17 +272,17 @@ export default function ProductPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-cream-warm)', padding: '40px 0' }}>
-      <header style={{ background: 'var(--color-charcoal)', color: 'white', padding: '15px 0', position: 'sticky', top: 0, zIndex: 100, marginBottom: '40px' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--color-white)', paddingTop: '40px' }}>
+      <header style={{ background: 'var(--color-black)', color: 'white', padding: '15px 0', position: 'sticky', top: 0, zIndex: 100, marginBottom: '40px' }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: 'white', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
             ← Back
           </button>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', letterSpacing: '0.1em' }}>BOSTIQUE</span>
           <button onClick={() => router.push('/cart')} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative', cursor: 'pointer' }}>
             🛒
             {cartCount > 0 && (
-              <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-cognac)', color: 'white', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--color-white)', color: 'var(--color-black)', fontSize: '0.65rem', width: '18px', height: '18px', borderRadius: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>
                 {cartCount}
               </span>
             )}
@@ -263,7 +292,7 @@ export default function ProductPage() {
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px' }}>
           <div>
-            <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', marginBottom: '16px', position: 'relative' }}>
+            <div style={{ background: 'var(--color-gray-50)', borderRadius: '0', overflow: 'hidden', marginBottom: '16px', position: 'relative' }}>
               <div style={{ aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 {images[selectedImage] ? (
                   <img src={images[selectedImage]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -275,13 +304,13 @@ export default function ProductPage() {
                   <>
                     <button 
                       onClick={prevImage}
-                      style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '0', border: 'none', background: 'var(--color-white)', cursor: 'pointer', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                     >
                       ‹
                     </button>
                     <button 
                       onClick={nextImage}
-                      style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.9)', cursor: 'pointer', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '0', border: 'none', background: 'var(--color-white)', cursor: 'pointer', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                     >
                       ›
                     </button>
@@ -289,7 +318,7 @@ export default function ProductPage() {
                       {images.filter(Boolean).map((_, idx) => (
                         <div 
                           key={idx}
-                          style={{ width: '10px', height: '10px', borderRadius: '50%', background: selectedImage === idx ? 'var(--color-cognac)' : 'rgba(0,0,0,0.2)', cursor: 'pointer' }}
+                          style={{ width: '10px', height: '10px', borderRadius: '0', background: selectedImage === idx ? 'var(--color-black)' : 'rgba(0,0,0,0.2)', cursor: 'pointer' }}
                           onClick={() => setSelectedImage(idx)}
                         />
                       ))}
@@ -298,20 +327,19 @@ export default function ProductPage() {
                 )}
               </div>
               {product.badge && (
-                <span style={{ position: 'absolute', top: '20px', left: '20px', background: product.badge === 'Sale' ? 'var(--color-error)' : 'var(--color-success)', color: 'white', padding: '8px 16px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
+                <span style={{ position: 'absolute', top: '20px', left: '20px', background: 'var(--color-black)', color: 'white', padding: '8px 16px', borderRadius: '0', fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                   {product.badge}
                 </span>
               )}
             </div>
 
-            {/* Optional: Show thumbnails below for desktop */}
             {hasMultipleImages && !isMobile && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
                 {images.filter(Boolean).map((img, idx) => (
                   <button 
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    style={{ aspectRatio: '1', borderRadius: '10px', overflow: 'hidden', border: selectedImage === idx ? '3px solid var(--color-cognac)' : '3px solid transparent', padding: 0, cursor: 'pointer' }}
+                    style={{ aspectRatio: '1', borderRadius: '0', overflow: 'hidden', border: selectedImage === idx ? '2px solid var(--color-black)' : '2px solid transparent', padding: 0, cursor: 'pointer' }}
                   >
                     <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </button>
@@ -321,17 +349,17 @@ export default function ProductPage() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>{product.category}</p>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 400, marginBottom: '16px', lineHeight: 1.2 }}>{product.name}</h1>
-            <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-cognac)', marginBottom: '32px' }}>₹{product.price.toLocaleString()}</p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>{product.category}</p>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 400, marginBottom: '16px', lineHeight: 1.2, letterSpacing: '-0.02em' }}>{product.name}</h1>
+            <p style={{ fontSize: '1.75rem', fontWeight: 600, color: 'var(--color-black)', marginBottom: '32px' }}>₹{product.price.toLocaleString()}</p>
             
             <p style={{ fontSize: '1rem', color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: '32px' }}>
               {product.desc || product.description || 'Premium quality leather product from Bostique. Crafted with attention to detail and made from the finest materials.'}
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-              <span style={{ fontSize: '0.95rem', color: 'var(--color-text-secondary)' }}>Quantity</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '6px' }}>
+              <span style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>Quantity</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', border: '1px solid var(--color-gray-300)', borderRadius: '0', padding: '6px' }}>
                 <button onClick={() => setQty(Math.max(1, qty - 1))} style={{ width: '40px', height: '40px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '1.3rem' }}>−</button>
                 <span style={{ minWidth: '30px', textAlign: 'center', fontSize: '1.1rem', fontWeight: 600 }}>{qty}</span>
                 <button onClick={() => setQty(qty + 1)} style={{ width: '40px', height: '40px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '1.3rem' }}>+</button>
@@ -339,24 +367,55 @@ export default function ProductPage() {
             </div>
 
             <div style={{ display: 'flex', gap: '16px' }}>
-              <button onClick={addToCart} style={{ flex: 1, padding: '18px 32px', background: 'var(--color-charcoal)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={addToCart} style={{ flex: 1, padding: '18px 32px', background: 'var(--color-black)', color: 'white', border: 'none', borderRadius: '0', fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer' }}>
                 Add to Bag
               </button>
-              <button onClick={handleWhatsAppOrder} style={{ padding: '18px 24px', background: '#25D366', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1.5rem', cursor: 'pointer' }}>
-                💬
+              <button onClick={handleWhatsAppOrder} style={{ padding: '18px 24px', background: '#25D366', color: 'white', border: 'none', borderRadius: '0', fontSize: '1.25rem', cursor: 'pointer' }}>
+                ✦
               </button>
             </div>
 
-            <div style={{ marginTop: '40px', padding: '20px', background: 'rgba(139, 69, 19, 0.05)', borderRadius: '10px', border: '1px solid var(--color-cognac)' }}>
-              <p style={{ fontSize: '0.85rem', color: 'var(--color-cognac)', fontWeight: 500 }}>Free shipping on orders above ₹2000</p>
-              <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '8px' }}>Pan-India delivery • Quality assured • WhatsApp support</p>
+            <div style={{ marginTop: '40px', padding: '20px', background: 'var(--color-gray-50)', borderRadius: '0', border: '1px solid var(--color-gray-200)' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--color-black)', fontWeight: 500 }}>Free shipping on orders above ₹2000</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '8px' }}>Pan-India delivery • Quality assured • WhatsApp support</p>
             </div>
           </div>
         </div>
       </div>
 
+      {recommendedProducts.length > 0 && (
+        <section style={{ padding: '80px 48px', background: 'var(--color-gray-50)', marginTop: '80px' }}>
+          <div className="container">
+            <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: '12px' }}>You May Also Like</p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 2.5vw, 2rem)', fontWeight: 400, color: 'var(--color-black)', marginBottom: '40px', letterSpacing: '-0.02em' }}>Recommended Products</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '32px' }}>
+              {recommendedProducts.map(p => (
+                <div 
+                  key={p.id}
+                  onClick={() => router.push(`/product/${p.id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div style={{ background: 'var(--color-white)', borderRadius: '0', overflow: 'hidden', marginBottom: '16px' }}>
+                    <div style={{ aspectRatio: '4/5', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-white)' }}>
+                      {p.images && p.images[0] ? (
+                        <img src={p.images[0]} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <span style={{ fontSize: '4rem' }}>{p.emoji}</span>
+                      )}
+                    </div>
+                  </div>
+                  <p style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>{p.category}</p>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 400, color: 'var(--color-black)', marginBottom: '8px' }}>{p.name}</p>
+                  <p style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--color-black)' }}>₹{p.price.toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {toast && (
-        <div style={{ position: 'fixed', bottom: '30px', right: '30px', background: 'var(--color-charcoal)', color: 'white', padding: '14px 28px', borderRadius: '8px', zIndex: 1000 }}>
+        <div style={{ position: 'fixed', bottom: '30px', right: '30px', background: 'var(--color-black)', color: 'white', padding: '14px 28px', borderRadius: '0', zIndex: 1000, fontSize: '0.8rem' }}>
           {toast}
         </div>
       )}

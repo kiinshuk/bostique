@@ -5,7 +5,7 @@ const featStyles = {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     minHeight: '80vh',
-    background: 'var(--color-charcoal)',
+    background: 'var(--color-black)',
     color: 'var(--color-white)',
   },
   visual: {
@@ -13,7 +13,7 @@ const featStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'linear-gradient(135deg, var(--color-cognac-dark) 0%, var(--color-charcoal) 100%)',
+    background: 'var(--color-gray-900)',
     overflow: 'hidden',
   },
   decoNum: {
@@ -21,31 +21,17 @@ const featStyles = {
     top: '40px',
     left: '40px',
     fontFamily: 'var(--font-display)',
-    fontSize: '8rem',
-    color: 'rgba(200, 169, 122, 0.1)',
+    fontSize: '6rem',
+    color: 'rgba(255,255,255,0.08)',
     lineHeight: 1,
   },
-  badge: {
-    position: 'absolute' as const,
-    top: '40px',
-    right: '40px',
-    padding: '8px 16px',
-    background: 'var(--color-gold)',
-    color: 'var(--color-charcoal)',
-    fontSize: '0.7rem',
-    fontWeight: 500,
-    letterSpacing: '0.1em',
-    borderRadius: 'var(--radius-full)',
-  },
   bagVisual: {
-    width: '300px',
-    height: '380px',
-    background: 'var(--color-cognac)',
-    borderRadius: 'var(--radius-lg)',
+    width: '280px',
+    height: '360px',
+    background: 'var(--color-gray-700)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: 'var(--shadow-2xl)',
   },
   content: {
     display: 'flex',
@@ -54,33 +40,35 @@ const featStyles = {
     padding: '80px',
   },
   eyebrow: {
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     letterSpacing: '0.2em',
-    color: 'rgba(250, 250, 248, 0.5)',
+    color: 'rgba(255,255,255,0.5)',
     marginBottom: '16px',
+    textTransform: 'uppercase',
   },
   title: {
     fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(2.5rem, 4vw, 3.5rem)',
-    fontWeight: 300,
+    fontSize: 'clamp(2rem, 3.5vw, 3rem)',
+    fontWeight: 400,
     lineHeight: 1.2,
     marginBottom: '24px',
+    color: 'var(--color-white)',
   },
   highlight: {
     fontStyle: 'italic',
-    color: 'var(--color-gold)',
+    color: 'rgba(255,255,255,0.7)',
   },
   body: {
-    fontSize: '1rem',
-    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: '0.95rem',
+    color: 'rgba(255,255,255,0.7)',
     lineHeight: 1.7,
     marginBottom: '16px',
-    maxWidth: '480px',
+    maxWidth: '420px',
   },
   price: {
-    fontSize: '2rem',
-    fontWeight: 600,
-    color: 'var(--color-gold)',
+    fontSize: '1.75rem',
+    fontWeight: 500,
+    color: 'var(--color-white)',
     marginBottom: '32px',
   },
   ctaRow: {
@@ -89,34 +77,36 @@ const featStyles = {
     flexWrap: 'wrap' as const,
   },
   primaryBtn: {
-    padding: '16px 32px',
-    background: 'var(--color-surface)',
-    color: 'var(--color-charcoal)',
+    padding: '14px 28px',
+    background: 'var(--color-white)',
+    color: 'var(--color-black)',
     border: 'none',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.85rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
     cursor: 'pointer',
-    transition: 'all var(--transition-fast)',
+    transition: 'background 0.2s ease',
   },
   waBtn: {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '16px 32px',
-    background: '#25D366',
+    padding: '14px 28px',
+    background: 'transparent',
     color: 'var(--color-white)',
-    border: 'none',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.85rem',
+    border: '1px solid rgba(255,255,255,0.3)',
+    fontSize: '0.75rem',
     fontWeight: 500,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
     textDecoration: 'none',
     cursor: 'pointer',
-    transition: 'all var(--transition-fast)',
+    transition: 'border-color 0.2s ease',
   },
   mobileSection: {
-    padding: '40px 20px',
-    background: 'var(--color-charcoal)',
+    padding: '48px 20px',
+    background: 'var(--color-black)',
     color: 'var(--color-white)',
   },
   mobileHeader: {
@@ -125,24 +115,26 @@ const featStyles = {
   mobileEyebrow: {
     fontSize: '0.65rem',
     letterSpacing: '0.15em',
-    color: 'rgba(250, 250, 248, 0.5)',
+    color: 'rgba(255,255,255,0.5)',
+    textTransform: 'uppercase',
   },
   mobileTitle: {
     fontFamily: 'var(--font-display)',
     fontSize: '1.5rem',
-    fontWeight: 300,
+    fontWeight: 400,
     marginTop: '4px',
+    color: 'var(--color-white)',
   },
   mobileDesc: {
     fontSize: '0.85rem',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(255,255,255,0.7)',
     marginBottom: '16px',
     lineHeight: 1.6,
   },
   mobilePrice: {
     fontSize: '1.25rem',
-    fontWeight: 600,
-    color: 'var(--color-gold)',
+    fontWeight: 500,
+    color: 'var(--color-white)',
     marginBottom: '16px',
   },
   mobileBtns: {
@@ -152,21 +144,24 @@ const featStyles = {
   },
   mobileAddBtn: {
     padding: '14px',
-    background: 'var(--color-surface)',
-    color: 'var(--color-charcoal)',
+    background: 'var(--color-white)',
+    color: 'var(--color-black)',
     border: 'none',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.85rem',
+    fontSize: '0.75rem',
     fontWeight: 500,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
     cursor: 'pointer',
   },
   mobileWaBtn: {
     padding: '14px',
-    background: '#25D366',
+    background: 'transparent',
     color: 'var(--color-white)',
-    border: 'none',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.85rem',
+    border: '1px solid rgba(255,255,255,0.3)',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
     textAlign: 'center' as const,
     textDecoration: 'none',
   },
@@ -179,13 +174,13 @@ export default function Featured({ onAddToCart, isMobile }) {
     return (
       <section style={featStyles.mobileSection}>
         <div style={featStyles.mobileHeader}>
-          <span style={featStyles.mobileEyebrow}>EDITOR'S PICK</span>
+          <span style={featStyles.mobileEyebrow}>Editor's Pick</span>
           <h2 style={featStyles.mobileTitle}>
             The <em style={featStyles.highlight}>Expedition</em> Duffel
           </h2>
         </div>
         <p style={featStyles.mobileDesc}>
-          Full-grain leather weekend bag with weatherproof canvas base.
+          Full-grain leather weekend bag with refined craftsmanship.
         </p>
         <p style={featStyles.mobilePrice}>₹3,499</p>
         <div style={featStyles.mobileBtns}>
@@ -200,7 +195,7 @@ export default function Featured({ onAddToCart, isMobile }) {
             target="_blank"
             style={featStyles.mobileWaBtn}
           >
-            💬 Order on WhatsApp
+            WhatsApp
           </a>
         </div>
       </section>
@@ -211,32 +206,24 @@ export default function Featured({ onAddToCart, isMobile }) {
     <section style={featStyles.section}>
       <div style={featStyles.visual}>
         <span style={featStyles.decoNum}>01</span>
-        <span style={featStyles.badge}>Bestseller</span>
         <div style={featStyles.bagVisual}>
-          <span style={{ fontSize: '8rem' }}>🧳</span>
+          <span style={{ fontSize: '6rem', opacity: 0.5 }}>🧳</span>
         </div>
       </div>
       <div style={featStyles.content}>
-        <p style={featStyles.eyebrow}>EDITOR'S PICK</p>
+        <p style={featStyles.eyebrow}>Editor's Pick</p>
         <h2 style={featStyles.title}>
           The <em style={featStyles.highlight}>Expedition</em><br />Duffel
         </h2>
         <p style={featStyles.body}>
-          Our flagship piece — built for the journey, whatever it looks like. 
-          Full-grain leather with weatherproof canvas base, YKK zippers, and a 
-          padded shoulder strap that distributes weight like it was made for you. 
-          Because it was.
-        </p>
-        <p style={featStyles.body}>
-          This isn't just a bag. It's the one you'll still be carrying in twenty years.
+          Full-grain leather weekend bag with refined craftsmanship. 
+          Built to last, designed to age beautifully.
         </p>
         <div style={featStyles.price}>₹3,499</div>
         <div style={featStyles.ctaRow}>
           <button 
             onClick={() => onAddToCart(featuredProduct)}
             style={featStyles.primaryBtn}
-            onMouseEnter={e => e.currentTarget.style.background = 'var(--color-gold)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'var(--color-surface)'}
           >
             Add to Bag
           </button>
@@ -244,10 +231,8 @@ export default function Featured({ onAddToCart, isMobile }) {
             href="https://wa.me/919084736334?text=Hi%20Bostique!%20I%27m%20interested%20in%20the%20Expedition%20Duffel." 
             target="_blank"
             style={featStyles.waBtn}
-            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
           >
-            💬 Order on WhatsApp
+            WhatsApp
           </a>
         </div>
       </div>

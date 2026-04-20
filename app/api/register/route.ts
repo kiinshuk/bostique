@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDB, saveDB } from '@/app/lib/data';
+import { getDB, updateDB } from '@/app/lib/data';
 
 export async function POST(request: Request) {
   const db = getDB();
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     created_at: new Date().toISOString()
   };
   db.users.push(user);
-  saveDB(db);
+  updateDB({ users: db.users, nextUserId: db.nextUserId });
   
   return NextResponse.json({ success: true, userId: user.id });
 }

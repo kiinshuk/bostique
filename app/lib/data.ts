@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 export interface Product {
   id: number;
   name: string;
@@ -8,6 +11,7 @@ export interface Product {
   desc: string;
   badge: string;
   image: string;
+  images?: string[];
   status: string;
 }
 
@@ -52,14 +56,14 @@ interface DB {
 
 const initialDB: DB = {
   products: [
-    {id:1,name:'Expedition Duffel',category:'Duffel Bag',category_id:1,price:3499,emoji:'🧳',desc:'Full-grain leather weekend bag.',badge:'New',image:'',status:'active'},
-    {id:2,name:'City Slicker Duffel',category:'Duffel Bag',category_id:1,price:2799,emoji:'🧳',desc:'Compact leather duffel.',badge:'',image:'',status:'active'},
-    {id:3,name:'Heritage Carry Tote',category:'Carry Bag',category_id:2,price:1899,emoji:'👜',desc:'Timeless everyday tote.',badge:'New',image:'',status:'active'},
-    {id:4,name:'Market Carry Bag',category:'Carry Bag',category_id:2,price:1299,emoji:'👜',desc:'Durable canvas and leather.',badge:'',image:'',status:'active'},
-    {id:5,name:'Urban Pro Backpack',category:'Backpack',category_id:3,price:2999,emoji:'🎒',desc:'Work-ready leather backpack.',badge:'New',image:'',status:'active'},
-    {id:6,name:'Trail Backpack',category:'Backpack',category_id:3,price:2199,emoji:'🎒',desc:'Adventure-ready backpack.',badge:'',image:'',status:'active'},
-    {id:7,name:'Cognac Cushion Cover',category:'Cushion Cover',category_id:4,price:899,emoji:'🛋️',desc:'Luxurious leather cushion.',badge:'New',image:'',status:'active'},
-    {id:8,name:'Tan Leather Cushion Pair',category:'Cushion Cover',category_id:4,price:1699,emoji:'🪑',desc:'Set of 2 cushion covers.',badge:'Sale',image:'',status:'active'}
+    {id:1,name:'Expedition Duffel',category:'Duffel Bag',category_id:1,price:3499,emoji:'🧳',desc:'Full-grain leather weekend bag.',badge:'New',image:'',status:'active',images:['']},
+    {id:2,name:'City Slicker Duffel',category:'Duffel Bag',category_id:1,price:2799,emoji:'🧳',desc:'Compact leather duffel.',badge:'',image:'',status:'active',images:['']},
+    {id:3,name:'Heritage Carry Tote',category:'Carry Bag',category_id:2,price:1899,emoji:'👜',desc:'Timeless everyday tote.',badge:'New',image:'',status:'active',images:['']},
+    {id:4,name:'Market Carry Bag',category:'Carry Bag',category_id:2,price:1299,emoji:'👜',desc:'Durable canvas and leather.',badge:'',image:'',status:'active',images:['']},
+    {id:5,name:'Urban Pro Backpack',category:'Backpack',category_id:3,price:2999,emoji:'🎒',desc:'Work-ready leather backpack.',badge:'New',image:'',status:'active',images:['']},
+    {id:6,name:'Trail Backpack',category:'Backpack',category_id:3,price:2199,emoji:'🎒',desc:'Adventure-ready backpack.',badge:'',image:'',status:'active',images:['']},
+    {id:7,name:'Cognac Cushion Cover',category:'Cushion Cover',category_id:4,price:899,emoji:'🛋️',desc:'Luxurious leather cushion.',badge:'New',image:'',status:'active',images:['']},
+    {id:8,name:'Tan Leather Cushion Pair',category:'Cushion Cover',category_id:4,price:1699,emoji:'🪑',desc:'Set of 2 cushion covers.',badge:'Sale',image:'',status:'active',images:['']}
   ],
   categories: [
     {id:1,name:'Duffel Bag',icon:'🧳'},{id:2,name:'Carry Bag',icon:'👜'},{id:3,name:'Backpack',icon:'🎒'},{id:4,name:'Cushion Cover',icon:'🛋️'}
@@ -72,12 +76,40 @@ const initialDB: DB = {
   nextDiscId: 1
 };
 
-let db: DB = { ...initialDB };
+const DB_PATH = path.join(process.cwd(), 'data.json');
+
+function loadDB(): DB {
+  try {
+    if (fs.existsSync(DB_PATH)) {
+      const data = fs.readFileSync(DB_PATH, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (e) {
+    console.error('Failed to load database:', e);
+  }
+  return { ...initialDB };
+}
+
+function saveDB(db: DB): void {
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+  } catch (e) {
+    console.error('Failed to save database:', e);
+  }
+}
+
+let db: DB = loadDB();
 
 export function getDB() {
   return db;
 }
 
-export function saveDB(newDb: DB) {
+export function saveDBState(newDb: DB) {
   db = newDb;
+  saveDB(db);
+}
+
+export function updateDB(updates: Partial<DB>) {
+  db = { ...db, ...updates };
+  saveDB(db);
 }

@@ -2,24 +2,25 @@
 
 const philStyles = {
   section: {
-    padding: '80px 80px',
-    background: 'var(--color-surface)',
+    padding: '80px 48px',
+    background: 'var(--color-white)',
   },
   left: {
     marginBottom: '48px',
+    textAlign: 'center' as const,
   },
   eyebrow: {
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     letterSpacing: '0.2em',
     color: 'var(--color-text-muted)',
     marginBottom: '12px',
+    textTransform: 'uppercase',
   },
   leftTitle: {
     fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-    fontWeight: 300,
-    color: 'var(--color-charcoal)',
-    maxWidth: '500px',
+    fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
+    fontWeight: 400,
+    color: 'var(--color-black)',
     lineHeight: 1.4,
   },
   grid: {
@@ -29,77 +30,82 @@ const philStyles = {
   },
   item: {
     padding: '32px 24px',
-    background: 'var(--color-cream-warm)',
-    borderRadius: 'var(--radius-lg)',
-    transition: 'all var(--transition-base)',
+    background: 'var(--color-gray-50)',
+    borderRadius: '0',
+    textAlign: 'center' as const,
   },
   iconWrap: {
-    fontSize: '2rem',
-    marginBottom: '20px',
+    fontSize: '1.5rem',
+    marginBottom: '16px',
   },
   title: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.125rem',
-    fontWeight: 500,
-    color: 'var(--color-charcoal)',
-    marginBottom: '12px',
+    fontSize: '1rem',
+    fontWeight: 400,
+    color: 'var(--color-black)',
+    marginBottom: '8px',
   },
   body: {
-    fontSize: '0.875rem',
+    fontSize: '0.85rem',
     color: 'var(--color-text-secondary)',
     lineHeight: 1.6,
   },
   mobileSection: {
-    padding: '40px 20px',
-    background: 'var(--color-surface)',
+    padding: '48px 20px',
+    background: 'var(--color-white)',
   },
   mobileHeader: {
     marginBottom: '24px',
+    textAlign: 'center' as const,
   },
   mobileEyebrow: {
     fontSize: '0.65rem',
     letterSpacing: '0.15em',
     color: 'var(--color-text-muted)',
     marginBottom: '4px',
+    textTransform: 'uppercase',
   },
   mobileTitle: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.5rem',
-    fontWeight: 300,
+    fontSize: '1.25rem',
+    fontWeight: 400,
+    color: 'var(--color-black)',
   },
   mobileGrid: {
     display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
     gap: '12px',
   },
   mobileItem: {
     display: 'flex',
-    gap: '16px',
-    padding: '16px',
-    background: 'var(--color-cream-warm)',
-    borderRadius: 'var(--radius-lg)',
-    alignItems: 'flex-start',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    gap: '8px',
+    padding: '20px 12px',
+    background: 'var(--color-gray-50)',
+    borderRadius: '0',
+    textAlign: 'center' as const,
   },
   mobileIcon: {
-    fontSize: '1.5rem',
+    fontSize: '1.25rem',
   },
-  mobileContent: {},
   mobileItemTitle: {
-    fontSize: '0.95rem',
-    fontWeight: 600,
-    marginBottom: '4px',
-    color: 'var(--color-charcoal)',
+    fontFamily: 'var(--font-display)',
+    fontSize: '0.85rem',
+    fontWeight: 400,
+    color: 'var(--color-black)',
   },
   mobileItemDesc: {
-    fontSize: '0.8rem',
+    fontSize: '0.7rem',
     color: 'var(--color-text-secondary)',
   },
 };
 
 const reasons = [
-  { icon: '🏅', title: 'Premium Materials', desc: 'Genuine leather, top-grade fabrics.' },
-  { icon: '✂️', title: 'Artisan Crafted', desc: 'Hand-stitched by skilled craftsmen.' },
-  { icon: '🚚', title: 'Pan-India Delivery', desc: 'Fast shipping across India.' },
-  { icon: '💬', title: 'WhatsApp First', desc: 'Direct support via WhatsApp.' },
+  { icon: '✓', title: 'Premium Materials', desc: 'Genuine leather, quality fabrics.' },
+  { icon: '✦', title: 'Handcrafted', desc: 'Made by skilled artisans.' },
+  { icon: '↗', title: 'Pan-India Delivery', desc: 'Fast shipping across India.' },
+  { icon: '◈', title: 'WhatsApp Support', desc: 'Direct support via WhatsApp.' },
 ];
 
 export default function Philosophy({ isMobile }) {
@@ -107,17 +113,15 @@ export default function Philosophy({ isMobile }) {
     return (
       <section style={philStyles.mobileSection}>
         <div style={philStyles.mobileHeader}>
-          <p style={philStyles.mobileEyebrow}>WHY BOSTIQUE</p>
+          <p style={philStyles.mobileEyebrow}>Why Bostique</p>
           <h2 style={philStyles.mobileTitle}>Four reasons to choose us</h2>
         </div>
         <div style={philStyles.mobileGrid}>
           {reasons.map((item, i) => (
             <div key={i} style={philStyles.mobileItem}>
               <span style={philStyles.mobileIcon}>{item.icon}</span>
-              <div style={philStyles.mobileContent}>
-                <h3 style={philStyles.mobileItemTitle}>{item.title}</h3>
-                <p style={philStyles.mobileItemDesc}>{item.desc}</p>
-              </div>
+              <h3 style={philStyles.mobileItemTitle}>{item.title}</h3>
+              <p style={philStyles.mobileItemDesc}>{item.desc}</p>
             </div>
           ))}
         </div>
@@ -128,7 +132,7 @@ export default function Philosophy({ isMobile }) {
   return (
     <section style={philStyles.section}>
       <div style={philStyles.left}>
-        <p style={philStyles.eyebrow}>WHY BOSTIQUE</p>
+        <p style={philStyles.eyebrow}>Why Bostique</p>
         <p style={philStyles.leftTitle}>Four reasons to carry something made to last.</p>
       </div>
       <div style={philStyles.grid}>
@@ -136,13 +140,7 @@ export default function Philosophy({ isMobile }) {
           <div key={i} style={philStyles.item}>
             <div style={philStyles.iconWrap}>{item.icon}</div>
             <h3 style={philStyles.title}>{item.title}</h3>
-            <p style={philStyles.body}>
-              {item.desc}
-              {i === 0 && ' We source only genuine leather and top-grade fabrics. No synthetic shortcuts.'}
-              {i === 1 && ' Hand-stitched by craftsmen who treat every bag as their own.'}
-              {i === 2 && ' Fast, tracked shipping across India. Order today, receive in 3–5 business days.'}
-              {i === 3 && ' Order, query, or get support directly via WhatsApp. No bots.'}
-            </p>
+            <p style={philStyles.body}>{item.desc}</p>
           </div>
         ))}
       </div>
