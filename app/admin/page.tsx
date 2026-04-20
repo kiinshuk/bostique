@@ -35,6 +35,7 @@ export default function Dashboard() {
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [editingCategory, setEditingCategory] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -183,12 +184,24 @@ export default function Dashboard() {
     };
 
     try {
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productData)
-      });
-      const result = await res.json();
+      let result;
+      if (prodForm.id) {
+        // Update existing product
+        const res = await fetch(`/api/products?id=${prodForm.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData)
+        });
+        result = await res.json();
+      } else {
+        // Create new product
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData)
+        });
+        result = await res.json();
+      }
       
       if (result.success) {
         showToast('Product saved!');
@@ -240,6 +253,24 @@ export default function Dashboard() {
     }
   }
 
+  async function deleteUser(id) {
+    if (!confirm('Delete this user?')) return;
+    
+    try {
+      const res = await fetch(`/api/users?id=${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      
+      if (result.success) {
+        showToast('User deleted');
+        loadData();
+      } else {
+        showToast('Error: ' + (result.error || 'Failed'));
+      }
+    } catch (e) {
+      showToast('Error deleting user');
+    }
+  }
+
   async function addCategory() {
     if (!catForm.name) return;
     const newCat = { name: catForm.name, icon: catForm.icon || '📦' };
@@ -262,6 +293,36 @@ export default function Dashboard() {
       showToast('Error adding category');
     }
     
+    setCatForm({ name: '', icon: '' });
+  }
+
+  function editCategory(category) {
+    setEditingCategory(category.id);
+    setCatForm({ name: category.name, icon: category.icon || '' });
+  }
+
+  async function updateCategory() {
+    if (!catForm.name || !editingCategory) return;
+    
+    try {
+      const res = await fetch(`/api/categories?id=${editingCategory}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: catForm.name, icon: catForm.icon || '📦' })
+      });
+      const result = await res.json();
+      
+      if (result.success) {
+        showToast('Category updated!');
+        loadData();
+      } else {
+        showToast('Error: ' + (result.error || 'Failed'));
+      }
+    } catch (e) {
+      showToast('Error updating category');
+    }
+    
+    setEditingCategory(null);
     setCatForm({ name: '', icon: '' });
   }
 
@@ -527,18 +588,28 @@ export default function Dashboard() {
                         <td style={{ padding: '12px', fontSize: '24px' }}>{c.icon}</td>
                         <td style={{ padding: '12px' }}>{c.name}</td>
                         <td style={{ padding: '12px' }}>{products.filter(p => p.category_id === c.id).length}</td>
-                        <td style={{ padding: '12px' }}><button onClick={() => deleteCategory(c.id)} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Delete</button></td>
+                        <td style={{ padding: '12px' }}>
+                          <button onClick={() => editCategory(c)} style={{ background: '#007bff', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', marginRight: '5px' }}>Edit</button>
+                          <button onClick={() => deleteCategory(c.id)} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Delete</button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
               <div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}>
-                <h3 style={{ marginBottom: '15px', fontSize: '16px' }}>Add Category</h3>
+                <h3 style={{ marginBottom: '15px', fontSize: '16px' }}>{editingCategory ? 'Edit Category' : 'Add Category'}</h3>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <input value={catForm.name} onChange={e => setCatForm({...catForm, name: e.target.value})} placeholder="Category name" style={{ flex: 1, padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
                   <input value={catForm.icon} onChange={e => setCatForm({...catForm, icon: e.target.value})} placeholder="Icon" style={{ width: '80px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }} />
-                  <button onClick={addCategory} style={{ background: '#333', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer' }}>Add</button>
+                  {editingCategory ? (
+                    <>
+                      <button onClick={updateCategory} style={{ background: '#28a745', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer' }}>Update</button>
+                      <button onClick={() => { setEditingCategory(null); setCatForm({ name: '', icon: '' }); }} style={{ background: '#6c757d', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+                    </>
+                  ) : (
+                    <button onClick={addCategory} style={{ background: '#333', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer' }}>Add</button>
+                  )}
                 </div>
               </div>
             </div>
@@ -570,6 +641,7 @@ export default function Dashboard() {
                         <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Email</th>
                         <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Phone</th>
                         <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Joined</th>
+                        <th style={{ padding: '12px', textAlign: 'left', fontSize: '13px' }}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -580,6 +652,7 @@ export default function Dashboard() {
                           <td style={{ padding: '12px', color: '#666' }}>{u.email}</td>
                           <td style={{ padding: '12px' }}>{u.phone || '-'}</td>
                           <td style={{ padding: '12px', fontSize: '0.85rem', color: '#666' }}>{u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}</td>
+                          <td style={{ padding: '12px' }}><button onClick={() => deleteUser(u.id)} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>Delete</button></td>
                         </tr>
                       ))}
                     </tbody>

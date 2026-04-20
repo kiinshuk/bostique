@@ -42,6 +42,31 @@ export async function POST(request: Request) {
   return NextResponse.json({ success: true, id: data[0]?.id });
 }
 
+export async function PUT(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = parseInt(searchParams.get('id'));
+
+  if (!id) {
+    return NextResponse.json({ success: false, error: 'Missing id' }, { status: 400 });
+  }
+
+  const body = await request.json();
+
+  const { error } = await supabase
+    .from('categories')
+    .update({
+      name: body.name,
+      icon: body.icon || '📦'
+    })
+    .eq('id', id);
+
+  if (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
+}
+
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = parseInt(searchParams.get('id'));

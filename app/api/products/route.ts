@@ -53,6 +53,38 @@ export async function POST(request: Request) {
   return NextResponse.json({ success: true, id: data[0]?.id });
 }
 
+export async function PUT(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = parseInt(searchParams.get('id'));
+
+  if (!id) {
+    return NextResponse.json({ success: false, error: 'Missing id' }, { status: 400 });
+  }
+
+  const body = await request.json();
+  const categoryId = parseInt(body.category_id) || 1;
+
+  const { error } = await supabase
+    .from('products')
+    .update({
+      name: body.name,
+      category_id: categoryId,
+      price: parseInt(body.price) || 0,
+      emoji: body.emoji || '',
+      description: body.description || '',
+      badge: body.badge || '',
+      status: body.status || 'active',
+      images: body.images || []
+    })
+    .eq('id', id);
+
+  if (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
+}
+
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = parseInt(searchParams.get('id'));
