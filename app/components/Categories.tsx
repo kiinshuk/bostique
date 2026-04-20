@@ -2,37 +2,43 @@
 
 const catStyles = {
   section: {
-    padding: '80px 48px',
+    padding: '120px 48px',
     background: 'var(--color-white)',
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: '48px',
+    marginBottom: '64px',
     flexWrap: 'wrap' as const,
-    gap: '16px',
+    gap: '24px',
   },
   headerLeft: {},
   eyebrow: {
-    fontSize: '0.7rem',
-    letterSpacing: '0.2em',
-    color: 'var(--color-text-muted)',
-    marginBottom: '8px',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.65rem',
+    fontWeight: 500,
+    letterSpacing: '0.3em',
     textTransform: 'uppercase',
+    color: 'var(--color-gold)',
+    marginBottom: '12px',
   },
   h2: {
     fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
-    fontWeight: 400,
+    fontSize: 'clamp(2rem, 4vw, 3rem)',
+    fontWeight: 300,
     color: 'var(--color-black)',
     letterSpacing: '-0.02em',
   },
   viewAll: {
-    fontSize: '0.75rem',
-    color: 'var(--color-text-secondary)',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.7rem',
+    fontWeight: 500,
+    letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+    color: 'var(--color-gray-500)',
     cursor: 'pointer',
-    transition: 'color 0.2s',
+    transition: 'color 0.3s ease',
   },
   grid: {
     display: 'grid',
@@ -42,16 +48,15 @@ const catStyles = {
   panel: {
     position: 'relative' as const,
     aspectRatio: '3/4',
-    borderRadius: '0',
-    overflow: 'hidden',
-    cursor: 'pointer',
     background: 'var(--color-gray-50)',
+    cursor: 'pointer',
+    overflow: 'hidden',
   },
-  bgImage: {
+  overlay: {
     position: 'absolute' as const,
     inset: 0,
-    background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%)',
-    transition: 'opacity 0.3s ease',
+    background: 'linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.7) 100%)',
+    transition: 'opacity 0.4s ease',
   },
   content: {
     position: 'relative' as const,
@@ -60,62 +65,66 @@ const catStyles = {
     display: 'flex',
     flexDirection: 'column' as const,
     justifyContent: 'flex-end',
-    padding: '24px',
+    padding: '32px',
   },
   num: {
-    fontSize: '0.65rem',
-    letterSpacing: '0.15em',
-    color: 'rgba(255,255,255,0.6)',
-    marginBottom: '8px',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.6rem',
+    fontWeight: 500,
+    letterSpacing: '0.2em',
+    color: 'var(--color-gold)',
+    marginBottom: '12px',
     textTransform: 'uppercase',
   },
   title: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.25rem',
+    fontSize: '1.35rem',
     fontWeight: 400,
     color: 'var(--color-white)',
     lineHeight: 1.3,
-    marginBottom: '4px',
+    marginBottom: '8px',
   },
   sub: {
+    fontFamily: 'var(--font-body)',
     fontSize: '0.8rem',
+    fontWeight: 400,
     color: 'rgba(255,255,255,0.7)',
   },
   mobileSection: {
-    padding: '48px 20px',
+    padding: '60px 20px',
     background: 'var(--color-white)',
   },
   mobileHeader: {
-    marginBottom: '20px',
+    textAlign: 'center' as const,
+    marginBottom: '24px',
   },
   mobileEyebrow: {
-    fontSize: '0.65rem',
-    letterSpacing: '0.15em',
-    color: 'var(--color-text-muted)',
-    marginBottom: '4px',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.6rem',
+    letterSpacing: '0.25em',
     textTransform: 'uppercase',
+    color: 'var(--color-gold)',
+    marginBottom: '6px',
   },
   mobileH2: {
     fontFamily: 'var(--font-display)',
     fontSize: '1.5rem',
-    fontWeight: 400,
+    fontWeight: 300,
     color: 'var(--color-black)',
   },
   scrollWrap: {
     display: 'flex',
-    gap: '12px',
+    gap: '16px',
     overflowX: 'auto' as React.CSSProperties['overflowX'],
-    paddingBottom: '10px',
+    paddingBottom: '12px',
     scrollbarWidth: 'none' as React.CSSProperties['scrollbarWidth'],
   },
   card: {
     minWidth: '140px',
     padding: '24px 16px',
     background: 'var(--color-gray-50)',
-    borderRadius: '0',
     textAlign: 'center' as const,
     cursor: 'pointer',
-    transition: 'background 0.2s',
   },
   cardIcon: {
     fontSize: '1.75rem',
@@ -123,7 +132,7 @@ const catStyles = {
   },
   cardName: {
     fontFamily: 'var(--font-display)',
-    fontSize: '0.9rem',
+    fontSize: '0.95rem',
     fontWeight: 400,
     color: 'var(--color-black)',
   },
@@ -172,7 +181,7 @@ export default function Categories({ categories, onCategoryClick, isMobile }) {
       <div style={catStyles.grid}>
         {categories.map(cat => (
           <div key={cat.id} style={catStyles.panel} onClick={() => onCategoryClick(cat.name)}>
-            <div style={catStyles.bgImage}></div>
+            <div style={catStyles.overlay}></div>
             <div style={catStyles.content}>
               <span style={catStyles.num}>0{cat.id}</span>
               <h3 style={catStyles.title}>{cat.name}</h3>

@@ -4,7 +4,7 @@ const featStyles = {
   section: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    minHeight: '80vh',
+    minHeight: '90vh',
     background: 'var(--color-black)',
     color: 'var(--color-white)',
   },
@@ -13,22 +13,34 @@ const featStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'var(--color-gray-900)',
-    overflow: 'hidden',
+    background: 'linear-gradient(135deg, var(--color-gray-900) 0%, var(--color-black) 100%)',
   },
   decoNum: {
     position: 'absolute' as const,
-    top: '40px',
-    left: '40px',
+    top: '60px',
+    left: '60px',
     fontFamily: 'var(--font-display)',
-    fontSize: '6rem',
-    color: 'rgba(255,255,255,0.08)',
+    fontSize: '8rem',
+    color: 'rgba(201,169,98,0.08)',
     lineHeight: 1,
   },
+  badge: {
+    position: 'absolute' as const,
+    top: '60px',
+    left: '60px',
+    padding: '10px 20px',
+    background: 'var(--color-gold)',
+    color: 'var(--color-black)',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.6rem',
+    fontWeight: 600,
+    letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+  },
   bagVisual: {
-    width: '280px',
-    height: '360px',
-    background: 'var(--color-gray-700)',
+    width: '320px',
+    height: '420px',
+    background: 'var(--color-charcoal)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -38,71 +50,77 @@ const featStyles = {
     flexDirection: 'column' as const,
     justifyContent: 'center',
     padding: '80px',
+    maxWidth: '560px',
   },
   eyebrow: {
-    fontSize: '0.7rem',
-    letterSpacing: '0.2em',
-    color: 'rgba(255,255,255,0.5)',
-    marginBottom: '16px',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.65rem',
+    fontWeight: 500,
+    letterSpacing: '0.3em',
     textTransform: 'uppercase',
+    color: 'var(--color-gold)',
+    marginBottom: '20px',
   },
   title: {
     fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(2rem, 3.5vw, 3rem)',
-    fontWeight: 400,
-    lineHeight: 1.2,
-    marginBottom: '24px',
+    fontSize: 'clamp(2.5rem, 4vw, 4rem)',
+    fontWeight: 300,
+    lineHeight: 1.15,
+    marginBottom: '32px',
     color: 'var(--color-white)',
   },
   highlight: {
     fontStyle: 'italic',
-    color: 'rgba(255,255,255,0.7)',
+    color: 'var(--color-gold)',
   },
   body: {
+    fontFamily: 'var(--font-body)',
     fontSize: '0.95rem',
-    color: 'rgba(255,255,255,0.7)',
-    lineHeight: 1.7,
+    fontWeight: 400,
+    color: 'rgba(255,255,255,0.6)',
+    lineHeight: 1.8,
     marginBottom: '16px',
-    maxWidth: '420px',
   },
   price: {
-    fontSize: '1.75rem',
-    fontWeight: 500,
-    color: 'var(--color-white)',
-    marginBottom: '32px',
+    fontFamily: 'var(--font-display)',
+    fontSize: '2rem',
+    fontWeight: 400,
+    color: 'var(--color-gold)',
+    marginBottom: '40px',
   },
   ctaRow: {
     display: 'flex',
-    gap: '16px',
+    gap: '20px',
     flexWrap: 'wrap' as const,
   },
   primaryBtn: {
-    padding: '14px 28px',
-    background: 'var(--color-white)',
+    padding: '18px 40px',
+    background: 'var(--color-gold)',
     color: 'var(--color-black)',
     border: 'none',
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    letterSpacing: '0.1em',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.7rem',
+    fontWeight: 600,
+    letterSpacing: '0.2em',
     textTransform: 'uppercase',
     cursor: 'pointer',
-    transition: 'background 0.2s ease',
+    transition: 'all 0.3s ease',
   },
   waBtn: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '8px',
-    padding: '14px 28px',
+    gap: '10px',
+    padding: '18px 40px',
     background: 'transparent',
     color: 'var(--color-white)',
     border: '1px solid rgba(255,255,255,0.3)',
-    fontSize: '0.75rem',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.7rem',
     fontWeight: 500,
-    letterSpacing: '0.1em',
+    letterSpacing: '0.2em',
     textTransform: 'uppercase',
     textDecoration: 'none',
     cursor: 'pointer',
-    transition: 'border-color 0.2s ease',
   },
   mobileSection: {
     padding: '48px 20px',
@@ -110,57 +128,63 @@ const featStyles = {
     color: 'var(--color-white)',
   },
   mobileHeader: {
-    marginBottom: '16px',
+    marginBottom: '24px',
   },
   mobileEyebrow: {
-    fontSize: '0.65rem',
-    letterSpacing: '0.15em',
-    color: 'rgba(255,255,255,0.5)',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.6rem',
+    letterSpacing: '0.25em',
     textTransform: 'uppercase',
+    color: 'var(--color-gold)',
+    marginBottom: '8px',
   },
   mobileTitle: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.5rem',
-    fontWeight: 400,
-    marginTop: '4px',
+    fontSize: '1.75rem',
+    fontWeight: 300,
+    marginBottom: '16px',
     color: 'var(--color-white)',
   },
   mobileDesc: {
+    fontFamily: 'var(--font-body)',
     fontSize: '0.85rem',
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(255,255,255,0.6)',
     marginBottom: '16px',
     lineHeight: 1.6,
   },
   mobilePrice: {
-    fontSize: '1.25rem',
-    fontWeight: 500,
-    color: 'var(--color-white)',
-    marginBottom: '16px',
+    fontFamily: 'var(--font-display)',
+    fontSize: '1.5rem',
+    fontWeight: 400,
+    color: 'var(--color-gold)',
+    marginBottom: '20px',
   },
   mobileBtns: {
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: '10px',
+    gap: '12px',
   },
   mobileAddBtn: {
-    padding: '14px',
-    background: 'var(--color-white)',
+    padding: '16px',
+    background: 'var(--color-gold)',
     color: 'var(--color-black)',
     border: 'none',
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    letterSpacing: '0.1em',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.7rem',
+    fontWeight: 600,
+    letterSpacing: '0.15em',
     textTransform: 'uppercase',
     cursor: 'pointer',
   },
   mobileWaBtn: {
-    padding: '14px',
+    padding: '16px',
     background: 'transparent',
     color: 'var(--color-white)',
     border: '1px solid rgba(255,255,255,0.3)',
-    fontSize: '0.75rem',
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.7rem',
     fontWeight: 500,
-    letterSpacing: '0.1em',
+    letterSpacing: '0.15em',
     textTransform: 'uppercase',
     textAlign: 'center' as const,
     textDecoration: 'none',
@@ -195,7 +219,7 @@ export default function Featured({ onAddToCart, isMobile }) {
             target="_blank"
             style={featStyles.mobileWaBtn}
           >
-            WhatsApp
+            WhatsApp Order
           </a>
         </div>
       </section>
@@ -206,8 +230,9 @@ export default function Featured({ onAddToCart, isMobile }) {
     <section style={featStyles.section}>
       <div style={featStyles.visual}>
         <span style={featStyles.decoNum}>01</span>
+        <span style={featStyles.badge}>Bestseller</span>
         <div style={featStyles.bagVisual}>
-          <span style={{ fontSize: '6rem', opacity: 0.5 }}>🧳</span>
+          <span style={{ fontSize: '6rem', opacity: 0.3 }}>🧳</span>
         </div>
       </div>
       <div style={featStyles.content}>
@@ -218,6 +243,9 @@ export default function Featured({ onAddToCart, isMobile }) {
         <p style={featStyles.body}>
           Full-grain leather weekend bag with refined craftsmanship. 
           Built to last, designed to age beautifully.
+        </p>
+        <p style={featStyles.body}>
+          This isn't just a bag. It's the one you'll still be carrying in twenty years.
         </p>
         <div style={featStyles.price}>₹3,499</div>
         <div style={featStyles.ctaRow}>
