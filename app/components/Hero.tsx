@@ -1,6 +1,8 @@
 'use client';
 
-const heroStyles = {
+import type { CSSProperties } from 'react';
+
+const heroStyles: { [key: string]: CSSProperties } = {
   section: {
     minHeight: '100vh',
     display: 'flex',
