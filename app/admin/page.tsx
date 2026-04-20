@@ -59,16 +59,31 @@ export default function Dashboard() {
       if (cats?.length) setCategories(cats);
       if (prods?.length) setProducts(prods);
       if (usersData?.length) setUsers(usersData);
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+      console.error('Load error:', e); 
+    }
   }
+
+  useEffect(() => {
+    const savedAuth = localStorage.getItem('bostique_admin_auth');
+    if (savedAuth === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   function handleLogin() {
     if (username === 'admin' && password === 'bostique2026') {
       setIsAuthenticated(true);
+      localStorage.setItem('bostique_admin_auth', 'true');
       setError('');
     } else {
       setError('Invalid credentials');
     }
+  }
+
+  function handleLogout() {
+    setIsAuthenticated(false);
+    localStorage.removeItem('bostique_admin_auth');
   }
 
   function showToast(msg) {
@@ -176,11 +191,13 @@ export default function Dashboard() {
       const result = await res.json();
       
       if (result.success) {
-        showToast('Product created!');
+        showToast('Product saved!');
         loadData();
+      } else {
+        showToast('Error: ' + (result.error || 'Unknown error'));
       }
     } catch (e) {
-      showToast('Error saving product');
+      showToast('Error saving product: ' + e.message);
     }
     
     resetForm();
@@ -241,7 +258,10 @@ export default function Dashboard() {
           )}
           <h1 style={{ fontSize: isMobile ? '1rem' : '20px' }}>Bostique Admin</h1>
         </div>
-        <a href="/" style={{ color: 'white', fontSize: isMobile ? '0.75rem' : '14px' }}>View Store →</a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <a href="/" style={{ color: 'white', fontSize: isMobile ? '0.75rem' : '14px' }}>View Store →</a>
+          <button onClick={handleLogout} style={{ color: 'white', fontSize: isMobile ? '0.75rem' : '14px', background: 'none', border: 'none', cursor: 'pointer', opacity: 0.8 }}>Logout</button>
+        </div>
       </header>
       
       <div style={{ display: 'flex', minHeight: 'calc(100vh - 60px)', position: 'relative' }}>
