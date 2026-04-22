@@ -43,6 +43,7 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1);
   const [toast, setToast] = useState('');
   const [cartCount, setCartCount] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -149,7 +150,7 @@ export default function ProductPage() {
 
         <div style={{ padding: '20px' }}>
           <div style={{ position: 'relative', background: 'var(--color-gray-50)', borderRadius: '0', overflow: 'hidden', marginBottom: '20px' }}>
-            <div style={{ height: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+            <div onClick={() => images[selectedImage] && setLightboxOpen(true)} style={{ height: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', cursor: 'pointer' }}>
               {images[selectedImage] ? (
                 <motion.img 
                   key={selectedImage}
@@ -162,6 +163,9 @@ export default function ProductPage() {
               ) : (
                 <span style={{ fontSize: '5rem' }}>{product.emoji}</span>
               )}
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.1)', opacity: 0, transition: 'opacity 0.3s', cursor: 'zoom-in' }}>
+                <span style={{ padding: '12px 20px', background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '0.7rem', letterSpacing: '0.1em', borderRadius: '4px' }}>Tap to expand</span>
+              </div>
               
               {hasMultipleImages && (
                 <>
@@ -272,7 +276,56 @@ export default function ProductPage() {
           </section>
         )}
 
-        {toast && (
+{lightboxOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setLightboxOpen(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+        >
+          <button 
+            onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
+            style={{ position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none', color: 'white', fontSize: '2rem', cursor: 'pointer', zIndex: 10000 }}
+          >
+            ✕
+          </button>
+          <motion.img 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            src={images[selectedImage]}
+            alt={product.name}
+            style={{ maxWidth: '95%', maxHeight: '90vh', objectFit: 'contain' }}
+          />
+          {hasMultipleImages && (
+            <>
+              <button 
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)', color: 'white', cursor: 'pointer', fontSize: '1.5rem' }}
+              >
+                ‹
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)', color: 'white', cursor: 'pointer', fontSize: '1.5rem' }}
+              >
+                ›
+              </button>
+              <div style={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px' }}>
+                {images.filter(Boolean).map((_, idx) => (
+                  <div 
+                    key={idx}
+                    onClick={(e) => { e.stopPropagation(); setSelectedImage(idx); }}
+                    style={{ width: '10px', height: '10px', borderRadius: '50%', background: selectedImage === idx ? 'var(--color-gold)' : 'rgba(255,255,255,0.4)', cursor: 'pointer' }}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </motion.div>
+      )}
+
+      {toast && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
