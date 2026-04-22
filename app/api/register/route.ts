@@ -21,5 +21,5 @@ export async function POST(request: Request) {
   db.users.push(user);
   updateDB({ users: db.users, nextUserId: db.nextUserId });
   
-  return NextResponse.json({ success: true, userId: user.id });
+  return NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
 }

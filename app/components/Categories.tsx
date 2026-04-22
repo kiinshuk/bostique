@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 const catImages: Record<string, string> = {
   'Duffel Bag': 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80',
-  'Carry Bag': 'https://images.unsplash.com/photo-1590874103328-eac38a6356f1?w=800&q=80',
+  'Carry Bag': 'https://images.unsplash.com/photo-1591561954557-26941169b49e?w=800&q=80',
   'Backpack': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80',
   'Cushion Cover': 'https://images.unsplash.com/photo-1584100936595-c7654e5c7f39?w=800&q=80',
 };
