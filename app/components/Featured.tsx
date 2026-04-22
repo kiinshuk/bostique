@@ -9,48 +9,50 @@ const featStyles = {
     color: 'var(--color-white)',
   },
   visual: {
-    position: 'relative' as const,
+    position: 'relative',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'linear-gradient(135deg, var(--color-gray-900) 0%, var(--color-black) 100%)',
+    overflow: 'hidden',
+  },
+  bgImage: {
+    position: 'absolute',
+    inset: 0,
+    backgroundImage: 'url(https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1200&q=80)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    filter: 'brightness(0.6) saturate(1.2)',
+  },
+  overlay: {
+    position: 'absolute',
+    inset: 0,
+    background: 'linear-gradient(90deg, rgba(0,0,0,0.8) 0%, transparent 100%)',
   },
   decoNum: {
-    position: 'absolute' as const,
+    position: 'absolute',
     top: '60px',
     left: '60px',
     fontFamily: 'var(--font-display)',
-    fontSize: '8rem',
-    color: 'rgba(201,169,98,0.08)',
+    fontSize: '10rem',
+    color: 'rgba(201,169,98,0.1)',
     lineHeight: 1,
   },
-  badge: {
-    position: 'absolute' as const,
-    top: '60px',
-    left: '60px',
-    padding: '10px 20px',
-    background: 'var(--color-gold)',
-    color: 'var(--color-black)',
-    fontFamily: 'var(--font-body)',
-    fontSize: '0.6rem',
-    fontWeight: 600,
-    letterSpacing: '0.2em',
-    textTransform: 'uppercase',
-  },
   bagVisual: {
-    width: '320px',
-    height: '420px',
+    position: 'relative',
+    width: '360px',
+    height: '480px',
     background: 'var(--color-charcoal)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    border: '1px solid rgba(201,169,98,0.2)',
   },
   content: {
     display: 'flex',
-    flexDirection: 'column' as const,
+    flexDirection: 'column',
     justifyContent: 'center',
     padding: '80px',
-    maxWidth: '560px',
+    maxWidth: '600px',
   },
   eyebrow: {
     fontFamily: 'var(--font-body)',
@@ -67,7 +69,6 @@ const featStyles = {
     fontWeight: 300,
     lineHeight: 1.15,
     marginBottom: '32px',
-    color: 'var(--color-white)',
   },
   highlight: {
     fontStyle: 'italic',
@@ -91,10 +92,10 @@ const featStyles = {
   ctaRow: {
     display: 'flex',
     gap: '20px',
-    flexWrap: 'wrap' as const,
+    flexWrap: 'wrap',
   },
   primaryBtn: {
-    padding: '18px 40px',
+    padding: '16px 36px',
     background: 'var(--color-gold)',
     color: 'var(--color-black)',
     border: 'none',
@@ -110,7 +111,7 @@ const featStyles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '10px',
-    padding: '18px 40px',
+    padding: '16px 36px',
     background: 'transparent',
     color: 'var(--color-white)',
     border: '1px solid rgba(255,255,255,0.3)',
@@ -123,7 +124,7 @@ const featStyles = {
     cursor: 'pointer',
   },
   mobileSection: {
-    padding: '48px 20px',
+    padding: '60px 20px',
     background: 'var(--color-black)',
     color: 'var(--color-white)',
   },
@@ -143,7 +144,6 @@ const featStyles = {
     fontSize: '1.75rem',
     fontWeight: 300,
     marginBottom: '16px',
-    color: 'var(--color-white)',
   },
   mobileDesc: {
     fontFamily: 'var(--font-body)',
@@ -161,32 +161,32 @@ const featStyles = {
   },
   mobileBtns: {
     display: 'flex',
-    flexDirection: 'column' as const,
+    flexDirection: 'column',
     gap: '12px',
   },
   mobileAddBtn: {
-    padding: '16px',
+    padding: '14px',
     background: 'var(--color-gold)',
     color: 'var(--color-black)',
     border: 'none',
     fontFamily: 'var(--font-body)',
-    fontSize: '0.7rem',
+    fontSize: '0.65rem',
     fontWeight: 600,
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
     cursor: 'pointer',
   },
   mobileWaBtn: {
-    padding: '16px',
+    padding: '14px',
     background: 'transparent',
     color: 'var(--color-white)',
     border: '1px solid rgba(255,255,255,0.3)',
     fontFamily: 'var(--font-body)',
-    fontSize: '0.7rem',
+    fontSize: '0.65rem',
     fontWeight: 500,
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
-    textAlign: 'center' as const,
+    textAlign: 'center',
     textDecoration: 'none',
   },
 };
@@ -208,17 +208,10 @@ export default function Featured({ onAddToCart, isMobile }) {
         </p>
         <p style={featStyles.mobilePrice}>₹3,499</p>
         <div style={featStyles.mobileBtns}>
-          <button 
-            onClick={() => onAddToCart(featuredProduct)}
-            style={featStyles.mobileAddBtn}
-          >
+          <button onClick={() => onAddToCart(featuredProduct)} style={featStyles.mobileAddBtn}>
             Add to Bag
           </button>
-          <a 
-            href="https://wa.me/919084736334?text=Hi%20Bostique!%20I%27m%20interested%20in%20the%20Expedition%20Duffel."
-            target="_blank"
-            style={featStyles.mobileWaBtn}
-          >
+          <a href="https://wa.me/919084736334?text=Hi%20Bostique!" target="_blank" style={featStyles.mobileWaBtn}>
             WhatsApp Order
           </a>
         </div>
@@ -229,10 +222,11 @@ export default function Featured({ onAddToCart, isMobile }) {
   return (
     <section style={featStyles.section}>
       <div style={featStyles.visual}>
+        <div style={featStyles.bgImage}></div>
+        <div style={featStyles.overlay}></div>
         <span style={featStyles.decoNum}>01</span>
-        <span style={featStyles.badge}>Bestseller</span>
         <div style={featStyles.bagVisual}>
-          <span style={{ fontSize: '6rem', opacity: 0.3 }}>🧳</span>
+          <span style={{ fontSize: '8rem', opacity: 0.4 }}>🧳</span>
         </div>
       </div>
       <div style={featStyles.content}>
@@ -249,17 +243,10 @@ export default function Featured({ onAddToCart, isMobile }) {
         </p>
         <div style={featStyles.price}>₹3,499</div>
         <div style={featStyles.ctaRow}>
-          <button 
-            onClick={() => onAddToCart(featuredProduct)}
-            style={featStyles.primaryBtn}
-          >
+          <button onClick={() => onAddToCart(featuredProduct)} style={featStyles.primaryBtn}>
             Add to Bag
           </button>
-          <a 
-            href="https://wa.me/919084736334?text=Hi%20Bostique!%20I%27m%20interested%20in%20the%20Expedition%20Duffel." 
-            target="_blank"
-            style={featStyles.waBtn}
-          >
+          <a href="https://wa.me/919084736334?text=Hi%20Bostique!" target="_blank" style={featStyles.waBtn}>
             WhatsApp
           </a>
         </div>

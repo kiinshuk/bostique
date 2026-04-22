@@ -2,18 +2,17 @@
 
 const catStyles = {
   section: {
-    padding: '120px 48px',
+    padding: '100px 48px',
     background: 'var(--color-white)',
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: '64px',
-    flexWrap: 'wrap' as const,
+    marginBottom: '48px',
+    flexWrap: 'wrap',
     gap: '24px',
   },
-  headerLeft: {},
   eyebrow: {
     fontFamily: 'var(--font-body)',
     fontSize: '0.65rem',
@@ -28,7 +27,6 @@ const catStyles = {
     fontSize: 'clamp(2rem, 4vw, 3rem)',
     fontWeight: 300,
     color: 'var(--color-black)',
-    letterSpacing: '-0.02em',
   },
   viewAll: {
     fontFamily: 'var(--font-body)',
@@ -38,34 +36,39 @@ const catStyles = {
     textTransform: 'uppercase',
     color: 'var(--color-gray-500)',
     cursor: 'pointer',
-    transition: 'color 0.3s ease',
   },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '24px',
+    gap: '20px',
   },
   panel: {
-    position: 'relative' as const,
+    position: 'relative',
     aspectRatio: '3/4',
-    background: 'var(--color-gray-50)',
     cursor: 'pointer',
     overflow: 'hidden',
   },
-  overlay: {
-    position: 'absolute' as const,
+  bgImage: {
+    position: 'absolute',
     inset: 0,
-    background: 'linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.7) 100%)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    transition: 'transform 0.6s ease',
+  },
+  overlay: {
+    position: 'absolute',
+    inset: 0,
+    background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.8) 100%)',
     transition: 'opacity 0.4s ease',
   },
   content: {
-    position: 'relative' as const,
+    position: 'relative',
     zIndex: 2,
     height: '100%',
     display: 'flex',
-    flexDirection: 'column' as const,
+    flexDirection: 'column',
     justifyContent: 'flex-end',
-    padding: '32px',
+    padding: '28px',
   },
   num: {
     fontFamily: 'var(--font-body)',
@@ -78,11 +81,11 @@ const catStyles = {
   },
   title: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.35rem',
+    fontSize: '1.3rem',
     fontWeight: 400,
     color: 'var(--color-white)',
     lineHeight: 1.3,
-    marginBottom: '8px',
+    marginBottom: '6px',
   },
   sub: {
     fontFamily: 'var(--font-body)',
@@ -95,7 +98,7 @@ const catStyles = {
     background: 'var(--color-white)',
   },
   mobileHeader: {
-    textAlign: 'center' as const,
+    textAlign: 'center',
     marginBottom: '24px',
   },
   mobileEyebrow: {
@@ -115,15 +118,14 @@ const catStyles = {
   scrollWrap: {
     display: 'flex',
     gap: '16px',
-    overflowX: 'auto' as React.CSSProperties['overflowX'],
+    overflowX: 'auto',
     paddingBottom: '12px',
-    scrollbarWidth: 'none' as React.CSSProperties['scrollbarWidth'],
   },
   card: {
     minWidth: '140px',
-    padding: '24px 16px',
+    padding: '20px 16px',
     background: 'var(--color-gray-50)',
-    textAlign: 'center' as const,
+    textAlign: 'center',
     cursor: 'pointer',
   },
   cardIcon: {
@@ -132,10 +134,17 @@ const catStyles = {
   },
   cardName: {
     fontFamily: 'var(--font-display)',
-    fontSize: '0.95rem',
+    fontSize: '0.9rem',
     fontWeight: 400,
     color: 'var(--color-black)',
   },
+};
+
+const catImages: Record<string, string> = {
+  'Duffel Bag': 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80',
+  'Carry Bag': 'https://images.unsplash.com/photo-1590874103328-eac38a6356f1?w=600&q=80',
+  'Backpack': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80',
+  'Cushion Cover': 'https://images.unsplash.com/photo-1584100936595-c7654e5c7f39?w=600&q=80',
 };
 
 const catSubtitles: Record<string, string> = {
@@ -155,11 +164,7 @@ export default function Categories({ categories, onCategoryClick, isMobile }) {
         </div>
         <div style={catStyles.scrollWrap}>
           {categories.map(cat => (
-            <div 
-              key={cat.id} 
-              onClick={() => onCategoryClick(cat.name)}
-              style={catStyles.card}
-            >
+            <div key={cat.id} onClick={() => onCategoryClick(cat.name)} style={catStyles.card}>
               <div style={catStyles.cardIcon}>{cat.icon}</div>
               <div style={catStyles.cardName}>{cat.name}</div>
             </div>
@@ -172,7 +177,7 @@ export default function Categories({ categories, onCategoryClick, isMobile }) {
   return (
     <section id="categories" style={catStyles.section}>
       <div style={catStyles.header}>
-        <div style={catStyles.headerLeft}>
+        <div>
           <p style={catStyles.eyebrow}>Collections</p>
           <h2 style={catStyles.h2}>Browse by Category</h2>
         </div>
@@ -180,7 +185,26 @@ export default function Categories({ categories, onCategoryClick, isMobile }) {
       </div>
       <div style={catStyles.grid}>
         {categories.map(cat => (
-          <div key={cat.id} style={catStyles.panel} onClick={() => onCategoryClick(cat.name)}>
+          <div 
+            key={cat.id} 
+            style={catStyles.panel} 
+            onClick={() => onCategoryClick(cat.name)}
+            onMouseEnter={(e) => {
+              const img = e.currentTarget.querySelector('[data-bg]') as HTMLElement;
+              if (img) img.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              const img = e.currentTarget.querySelector('[data-bg]') as HTMLElement;
+              if (img) img.style.transform = 'scale(1)';
+            }}
+          >
+            <div 
+              data-bg 
+              style={{
+                ...catStyles.bgImage,
+                backgroundImage: `url(${catImages[cat.name] || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80'})`,
+              }}
+            />
             <div style={catStyles.overlay}></div>
             <div style={catStyles.content}>
               <span style={catStyles.num}>0{cat.id}</span>
