@@ -19,14 +19,8 @@ export default function Nav({ cartCount, user, isMobile }) {
 
   if (isMobile) {
     return (
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-        padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        background: 'var(--color-black)', borderBottom: '1px solid rgba(201,169,98,0.2)',
-      }}>
-        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.4rem', cursor: 'pointer' }}>
-          {menuOpen ? '✕' : '☰'}
-        </button>
+      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--color-black)', borderBottom: '1px solid rgba(201,169,98,0.2)' }}>
+        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.4rem', cursor: 'pointer' }}>{menuOpen ? '✕' : '☰'}</button>
         <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 300, letterSpacing: '0.35em', color: 'white', textTransform: 'uppercase' }}>BOSTIQUE</span>
         <div style={{ display: 'flex', gap: '16px' }}>
           <button onClick={handleUserClick} style={{ background: 'none', border: 'none', color: 'white', fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.15em' }}>{user ? user.name : 'Account'}</button>
@@ -47,14 +41,7 @@ export default function Nav({ cartCount, user, isMobile }) {
   }
 
   return (
-    <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-      padding: '24px 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      background: scrolled ? 'rgba(0,0,0,0.95)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(20px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(201,169,98,0.2)' : 'none',
-      transition: 'all 0.4s ease',
-    }}>
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, padding: '24px 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: scrolled ? 'rgba(0,0,0,0.95)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid rgba(201,169,98,0.2)' : 'none', transition: 'all 0.4s ease' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '48px' }}>
         <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 300, letterSpacing: '0.35em', color: 'white', textTransform: 'uppercase' }}>BOSTIQUE</span>
         <div style={{ display: 'flex', gap: '36px' }}>
