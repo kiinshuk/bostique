@@ -1,132 +1,55 @@
 'use client';
 
-const philStyles = {
-  section: {
-    padding: '120px 48px',
-    background: 'var(--color-ivory)',
-  },
-  left: {
-    marginBottom: '64px',
-    textAlign: 'center' as const,
-  },
-  eyebrow: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '0.65rem',
-    fontWeight: 500,
-    letterSpacing: '0.3em',
-    textTransform: 'uppercase',
-    color: 'var(--color-gold)',
-    marginBottom: '16px',
-  },
-  leftTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
-    fontWeight: 300,
-    color: 'var(--color-black)',
-    lineHeight: 1.4,
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '32px',
-  },
-  item: {
-    padding: '40px 32px',
-    background: 'var(--color-white)',
-    textAlign: 'center' as const,
-  },
-  iconWrap: {
-    fontSize: '1.5rem',
-    color: 'var(--color-gold)',
-    marginBottom: '20px',
-  },
-  title: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '1.1rem',
-    fontWeight: 400,
-    color: 'var(--color-black)',
-    marginBottom: '12px',
-  },
-  body: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '0.8rem',
-    fontWeight: 400,
-    color: 'var(--color-gray-500)',
-    lineHeight: 1.7,
-  },
-  mobileSection: {
-    padding: '60px 20px',
-    background: 'var(--color-ivory)',
-  },
-  mobileHeader: {
-    textAlign: 'center' as const,
-    marginBottom: '32px',
-  },
-  mobileEyebrow: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '0.6rem',
-    letterSpacing: '0.25em',
-    textTransform: 'uppercase',
-    color: 'var(--color-gold)',
-    marginBottom: '8px',
-  },
-  mobileTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '1.5rem',
-    fontWeight: 300,
-    color: 'var(--color-black)',
-  },
-  mobileGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '16px',
-  },
-  mobileItem: {
-    padding: '24px 16px',
-    background: 'var(--color-white)',
-    textAlign: 'center' as const,
-  },
-  mobileIcon: {
-    fontSize: '1.25rem',
-    color: 'var(--color-gold)',
-    marginBottom: '12px',
-  },
-  mobileItemTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '0.9rem',
-    fontWeight: 400,
-    color: 'var(--color-black)',
-    marginBottom: '6px',
-  },
-  mobileItemDesc: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '0.7rem',
-    color: 'var(--color-gray-500)',
-  },
-};
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 const reasons = [
-  { icon: '✦', title: 'Premium Materials', desc: 'Genuine leather, quality fabrics.' },
-  { icon: '◈', title: 'Handcrafted', desc: 'Made by skilled artisans.' },
-  { icon: '↗', title: 'Pan-India Delivery', desc: 'Fast shipping across India.' },
-  { icon: '✓', title: 'WhatsApp Support', desc: 'Direct support via WhatsApp.' },
+  { icon: '✦', title: 'Premium Materials', desc: 'Genuine full-grain leather, quality fabrics.' },
+  { icon: '◈', title: 'Handcrafted', desc: 'Made by skilled artisans with decades of experience.' },
+  { icon: '↗', title: 'Pan-India Delivery', desc: 'Fast, free shipping across India.' },
+  { icon: '✓', title: 'WhatsApp Support', desc: 'Direct support via WhatsApp 9AM-9PM.' },
 ];
 
 export default function Philosophy({ isMobile }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   if (isMobile) {
     return (
-      <section style={philStyles.mobileSection}>
-        <div style={philStyles.mobileHeader}>
-          <p style={philStyles.mobileEyebrow}>Why Bostique</p>
-          <h2 style={philStyles.mobileTitle}>Four reasons to choose us</h2>
+      <section style={{ padding: '60px 0', background: 'var(--color-ivory)' }}>
+        <div style={{ padding: '0 20px', marginBottom: '32px', textAlign: 'center' }}>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ fontFamily: 'var(--font-body)', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: '8px' }}
+          >
+            Why Bostique
+          </motion.p>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 300, color: 'var(--color-black)' }}
+          >
+            Four reasons to choose us
+          </motion.h2>
         </div>
-        <div style={philStyles.mobileGrid}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', padding: '0 20px' }}>
           {reasons.map((item, i) => (
-            <div key={i} style={philStyles.mobileItem}>
-              <span style={philStyles.mobileIcon}>{item.icon}</span>
-              <h3 style={philStyles.mobileItemTitle}>{item.title}</h3>
-              <p style={philStyles.mobileItemDesc}>{item.desc}</p>
-            </div>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              style={{ padding: '24px 16px', background: 'var(--color-white)', textAlign: 'center', borderRadius: '2px' }}
+            >
+              <div style={{ fontSize: '1.25rem', color: 'var(--color-gold)', marginBottom: '12px' }}>{item.icon}</div>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 400, color: 'var(--color-black)', marginBottom: '8px' }}>{item.title}</h3>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.7rem', color: 'var(--color-gray-500)', lineHeight: 1.6 }}>{item.desc}</p>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -134,18 +57,54 @@ export default function Philosophy({ isMobile }) {
   }
 
   return (
-    <section style={philStyles.section}>
-      <div style={philStyles.left}>
-        <p style={philStyles.eyebrow}>Why Bostique</p>
-        <p style={philStyles.leftTitle}>Four reasons to carry something made to last.</p>
-      </div>
-      <div style={philStyles.grid}>
+    <section ref={ref} style={{ padding: '140px 48px', background: 'var(--color-ivory)' }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        style={{ textAlign: 'center', marginBottom: '72px' }}
+      >
+        <motion.p 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          style={{ fontFamily: 'var(--font-body)', fontSize: '0.65rem', fontWeight: 500, letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: '20px' }}
+        >
+          Why Bostique
+        </motion.p>
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 300, color: 'var(--color-black)', lineHeight: 1.4, maxWidth: '600px', margin: '0 auto' }}
+        >
+          Four reasons to carry something made to last.
+        </motion.h2>
+      </motion.div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', maxWidth: '1200px', margin: '0 auto' }}>
         {reasons.map((item, i) => (
-          <div key={i} style={philStyles.item}>
-            <div style={philStyles.iconWrap}>{item.icon}</div>
-            <h3 style={philStyles.title}>{item.title}</h3>
-            <p style={philStyles.body}>{item.desc}</p>
-          </div>
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.15, duration: 0.6 }}
+            whileHover={{ y: -8, boxShadow: '0 12px 40px rgba(0,0,0,0.08)' }}
+            style={{ padding: '48px 32px', background: 'var(--color-white)', textAlign: 'center', borderRadius: '2px', transition: 'box-shadow 0.3s ease' }}
+          >
+            <motion.div 
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+              style={{ fontSize: '1.75rem', color: 'var(--color-gold)', marginBottom: '24px' }}
+            >
+              {item.icon}
+            </motion.div>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 400, color: 'var(--color-black)', marginBottom: '16px' }}>{item.title}</h3>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 400, color: 'var(--color-gray-500)', lineHeight: 1.7 }}>{item.desc}</p>
+          </motion.div>
         ))}
       </div>
     </section>
