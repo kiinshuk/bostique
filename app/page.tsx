@@ -152,15 +152,6 @@ function HomeContent() {
 
   return (
     <div>
-      {!loading && <div id="loader" className="out"></div>}
-      {loading && (
-        <div id="loader">
-          <div className="loader-brand">BOSTIQUE</div>
-          <div className="loader-line"></div>
-          <p className="loader-sub">Luxury Carry Goods · Est. 2026</p>
-        </div>
-      )}
-
       <Nav 
         cartCount={cart.reduce((s, i) => s + i.qty, 0)} 
         user={user}
