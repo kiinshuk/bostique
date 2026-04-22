@@ -93,9 +93,12 @@ const catStyles = {
     fontWeight: 400,
     color: 'rgba(255,255,255,0.7)',
   },
-  mobileSection: {
+mobileSection: {
     padding: '60px 20px',
     background: 'var(--color-white)',
+  },
+  mobileHeader: {
+    marginBottom: '24px',
   },
   mobileHeader: {
     textAlign: 'center',
